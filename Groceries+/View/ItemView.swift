@@ -16,6 +16,7 @@ struct ItemView: View {
         Text(item.name)
           .foregroundColor(.primary)
           .font(.system(size: 16))
+          .opacity(item.checked ? 1.0 : 0.5)
         Spacer()
       }
       .frame(height: 40)

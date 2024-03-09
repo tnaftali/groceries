@@ -40,13 +40,11 @@ struct EditItemView: View {
           }
         }
         Section {
-          VStack(alignment: .trailing) {
-            Button("Delete") {
-              modelContext.delete(item)
-              presentationMode.wrappedValue.dismiss()
-            }
-            .foregroundColor(.red)
+          Button("Delete") {
+            modelContext.delete(item)
+            presentationMode.wrappedValue.dismiss()
           }
+          .foregroundColor(.red)
         }
       }
       .frame(maxHeight: .infinity)
