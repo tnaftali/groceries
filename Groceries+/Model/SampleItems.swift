@@ -8,11 +8,17 @@
 import Foundation
 
 struct SampleItems {
-  static var contents: [Item] = [
-    Item(name: "Philadelphia", checked: true),
-    Item(name: "Cheese", checked: false),
-    Item(name: "Lettuce", checked: false),
-    Item(name: "Ham", checked: true)
+  static var categories: [Category] = [
+    Category(name: "Produce"),
+    Category(name: "Meat")
+  ]
+  
+  static var items: [Item] = [
+    Item(name: "Chicken"),
+    Item(name: "Philadelphia"),
+    Item(name: "Cheese"),
+    Item(name: "Lettuce"),
+    Item(name: "Ham")
   ]
 }
 

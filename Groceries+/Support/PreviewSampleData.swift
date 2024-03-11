@@ -15,7 +15,10 @@ let previewContainer: ModelContainer = {
     )
     let modelContext = container.mainContext
     if try modelContext.fetch(FetchDescriptor<Item>()).isEmpty {
-      SampleItems.contents.forEach { container.mainContext.insert($0) }
+      SampleItems.items.forEach { container.mainContext.insert($0) }
+    }
+    if try modelContext.fetch(FetchDescriptor<Category>()).isEmpty {
+      SampleItems.categories.forEach { container.mainContext.insert($0) }
     }
     return container
   } catch {

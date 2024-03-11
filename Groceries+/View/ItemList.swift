@@ -10,93 +10,109 @@ import SwiftData
 import Foundation
 
 struct ItemList: View {
-  @Query private var items: [Item]
+  @Query(sort: \Item.name) private var items: [Item]
+  @Query(sort: \Category.name) private var categories: [Category]
   @Environment(\.colorScheme) var colorScheme
   @State private var searchText = ""
   @FocusState private var isFocused: Bool
   
   var body: some View {
-    var filteredAndSortedItems: [Item] {
+    var filteredItems: [Item] {
       if searchText.isEmpty {
-        return items.sorted { $0.name < $1.name }
+        return items
       } else {
-        return items.filter { $0.name.localizedCaseInsensitiveContains(searchText) }.sorted { $0.name < $1.name }
+        return items.filter { $0.name.localizedCaseInsensitiveContains(searchText) }
       }
     }
     
-    ZStack(alignment: .bottomTrailing) {
+    NavigationStack {
       VStack {
-        NavigationStack {
-          TextField("Search", text: $searchText)
-            .focused($isFocused)
-            .padding(.horizontal, 35)
-            .padding(.vertical, 10)
-            .background(Color(.systemGray6))
-            .cornerRadius(10)
-            .padding()
-            .overlay(
-              HStack {
-                Image(systemName: "magnifyingglass")
-                  .foregroundColor(Color(.systemGray2))
-                  .opacity(0.7)
-                  .padding(.leading, 8)
-                Spacer()
-                Button(action: {
-                  searchText = ""
-                }) {
-                  if searchText != "" {
-                    Image(systemName: "xmark.circle.fill")
-                      .foregroundColor(Color(.systemGray2))
-                      .opacity(0.4)
-                      .padding(.trailing, 8)
-                  }
+        TextField("Search", text: $searchText)
+          .focused($isFocused)
+          .padding(.horizontal, 35)
+          .padding(.vertical, 10)
+          .background(Color(.systemGray6))
+          .cornerRadius(10)
+          .padding(.leading)
+          .padding(.trailing)
+          .padding(.top, 20)
+          .padding(.bottom, 5)
+          .overlay(
+            HStack {
+              Image(systemName: "magnifyingglass")
+                .foregroundColor(Color(.systemGray2))
+                .opacity(0.7)
+                .padding(.leading, 8)
+                .padding(.top, 15)
+              Spacer()
+              Button(action: {
+                searchText = ""
+              }) {
+                if searchText != "" {
+                  Image(systemName: "xmark.circle.fill")
+                    .foregroundColor(Color(.systemGray2))
+                    .opacity(0.4)
+                    .padding(.trailing, 8)
+                    .padding(.top, 15)
                 }
               }
-              .padding(.horizontal, 16)
-            )
-            .autocorrectionDisabled()
+            }
+            .padding(.horizontal, 16)
+          )
+          .autocorrectionDisabled()
+          
+        let noCategoryItemsCount = filteredItems.filter { $0.category == nil }.count
+        if noCategoryItemsCount > 0 {
           Divider()
+        }
+          
+        VStack {
           ScrollView {
-            VStack {
-              ForEach(0..<((filteredAndSortedItems.count / 2) + 1), id: \.self) { index in
-                let item1Index = index == 0 ? index : index * 2
-                let item1 = filteredAndSortedItems.count > item1Index ? filteredAndSortedItems[item1Index] : nil
-                let item2Index = index == 0 ? index + 1 : index * 2 + 1
-                let item2 = filteredAndSortedItems.count > item2Index ? filteredAndSortedItems[item2Index] : nil
-                
-                HStack {
-                  if let item1 = item1 {
-                    ItemView(item: item1)
-                      .padding(.leading, 10)
-                  } else {
-                    GeometryReader { geometry in
-                      Color.clear.frame(width: geometry.size.width * 0.5)
+            VStack(spacing: 5) {
+              ItemsGroup(category: nil, searchText: $searchText)
+              
+              ForEach(categories, id: \.self) { category in
+                let categoryHasItems = filteredItems.filter { $0.category == category }.count > 0
+                if categoryHasItems {
+                  GeometryReader { geometry in
+                    ZStack(alignment: .leading) {
+                      Rectangle()
+                        .foregroundColor(Color(.systemGray5))
+                        .frame(width: geometry.size.width)
+                      Text(category.name)
+                        .fontWeight(.bold)
+                        .foregroundColor(.primary)
+                        .padding(.leading, 10)
                     }
                   }
+                  .frame(height: 35)
                   
-                  if let item2 = item2 {
-                    ItemView(item: item2)
-                      .padding(.trailing, 10)
-                  } else {
-                    GeometryReader { geometry in
-                      Color.clear.frame(width: geometry.size.width * 0.5)
-                    }
-                  }
-                  Divider()
+                  ItemsGroup(category: category, searchText: $searchText)
                 }
               }
             }
           }
-          .frame(width: .infinity)
           .onTapGesture {
             isFocused = false
           }
-          .navigationTitle("Groceries+")
+          .navigationBarItems(
+            leading:
+              Text("Groceries+")
+              .font(.largeTitle)
+              .fontWeight(.bold)
+              .foregroundColor(.primary)
+              .padding(.top, 20),
+            trailing: NavigationLink(destination: NewCategoryView()) {
+              Text("Add Category")
+                .padding(.top, 20)
+            }
+          )
+          
           HStack {
             Spacer()
             NavigationLink(destination: NewItemView()) {
               Image(systemName: "plus")
-                .font(.system(size: 36))
+                .font(.system(size: 40))
                 .padding(10)
                 .padding(.horizontal, 20)
                 .background(Color.blue)
@@ -114,4 +130,5 @@ struct ItemList: View {
 
 #Preview {
   ItemList()
+    .modelContainer(previewContainer)
 }

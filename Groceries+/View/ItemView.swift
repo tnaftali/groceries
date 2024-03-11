@@ -11,7 +11,7 @@ struct ItemView: View {
   @Bindable var item: Item
   
   var body: some View {
-    HStack {
+    HStack(spacing: 0) {
       NavigationLink(destination: EditItemView(item: item)) {
         Text(item.name)
           .foregroundColor(.primary)
@@ -20,6 +20,7 @@ struct ItemView: View {
         Spacer()
       }
       .frame(height: 40)
+      
       Toggle(isOn: Binding(
         get: { item.checked },
         set: { newValue in
@@ -33,21 +34,13 @@ struct ItemView: View {
       .scaleEffect(0.8)
       .toggleStyle(SwitchToggleStyle(tint: .blue))
       .accentColor(.blue)
-      .frame(width: 80)
+      .frame(width: 50)
     }
+//    .background(Color.green)
     .frame(height: 40)
   }
 }
 
-//#Preview {
-//  print(previewContainer)
-//  ItemView()
-//    .modelContainer(previewContainer)
-//  return Text("test")
-  
-  
-//  return ItemView(item: previewContainer[0])
-  
-//  return ItemView(item: Item(id: UUID(), name: "test", checked: true))
-//  ItemView()
-//}
+#Preview {
+  ItemView(item: Item(name: "Test", checked: true))
+}

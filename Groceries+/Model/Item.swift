@@ -12,13 +12,15 @@ import SwiftData
 final class Item {
   var id: UUID
   var name: String
-  var checked: Bool
+  var checked: Bool = false
+  var category: Category?
   var creationDate: Date
   
-  init(id: UUID = UUID(), name: String, checked: Bool, creationDate: Date = .now) {
+  init(id: UUID = UUID(), name: String, checked: Bool = false, category: Category? = nil, creationDate: Date = .now) {
     self.id = id
     self.name = name
     self.checked = checked
+    self.category = category
     self.creationDate = creationDate
   }
 }
