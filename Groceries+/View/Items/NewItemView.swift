@@ -9,6 +9,7 @@ import SwiftUI
 
 struct NewItemView: View {
   @State private var editedName = ""
+  @Environment(\.colorScheme) var colorScheme
   @Environment(\.presentationMode) var presentationMode
   @Environment(\.modelContext) private var modelContext
   @FocusState private var isFocused: Bool
@@ -24,19 +25,23 @@ struct NewItemView: View {
               isFocused = true
             }
             .onSubmit {
-              let newItem = Item(name: editedName, checked: false)
+              let newItem = Item(name: editedName, checked: true)
               modelContext.insert(newItem)
               presentationMode.wrappedValue.dismiss()
             }
         }
+        .listRowBackground(Color(.systemGray5))
         Section {
           Button("Save") {
-            let newItem = Item(name: editedName, checked: false)
+            let newItem = Item(name: editedName, checked: true)
             modelContext.insert(newItem)
             presentationMode.wrappedValue.dismiss()
           }
         }
+        .listRowBackground(Color(.systemGray5))
       }
+      .scrollContentBackground(.hidden)
+      .background(colorScheme == .dark ? Color.customDarkColor : Color.customLightColor)
       .navigationBarTitle("New Item")
     }
   }

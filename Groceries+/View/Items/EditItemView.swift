@@ -12,6 +12,7 @@ import Foundation
 struct EditItemView: View {
   @Query private var categories: [Category]
   @Bindable var item: Item
+  @Environment(\.colorScheme) var colorScheme
   @Environment(\.presentationMode) var presentationMode
   @Environment(\.modelContext) private var modelContext
   @State private var editedName = ""
@@ -32,6 +33,7 @@ struct EditItemView: View {
               presentationMode.wrappedValue.dismiss()
             }
         }
+        .listRowBackground(Color(.systemGray5))
         Section(header: Text("Category")) {
           Picker("Select category", selection: $selectedCategory) {
             Text("None").tag(nil as Category?)
@@ -43,16 +45,19 @@ struct EditItemView: View {
             item.category = selectedCategory
           }
         }
-        Section(header: Text("Creation Date")) {
+        .listRowBackground(Color(.systemGray5))
+        Section(header: Text("Created On")) {
           Text(getFormattedDateString(date: item.creationDate))
             .foregroundColor(Color.gray)
         }
+        .listRowBackground(Color(.systemGray5))
         Section {
           Button("Save") {
             item.name = editedName
             presentationMode.wrappedValue.dismiss()
           }
         }
+        .listRowBackground(Color(.systemGray5))
         Section {
           Button("Delete") {
             modelContext.delete(item)
@@ -60,8 +65,10 @@ struct EditItemView: View {
           }
           .foregroundColor(.red)
         }
+        .listRowBackground(Color(.systemGray5))
       }
-      .frame(maxHeight: .infinity)
+      .scrollContentBackground(.hidden)
+      .background(colorScheme == .dark ? Color.customDarkColor : Color.customLightColor)
       .navigationBarTitle("Edit Item")
     }
   }

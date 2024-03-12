@@ -1,5 +1,5 @@
 //
-//  ItemsGroup.swift
+//  ItemsGroupView.swift
 //  Groceries+
 //
 //  Created by Tobías Naftali on 2024-03-09.
@@ -9,7 +9,7 @@ import SwiftUI
 import SwiftData
 import Foundation
 
-struct ItemsGroup: View {
+struct ItemsGroupView: View {
   @Query(sort: \Item.name) private var items: [Item]
   var category: Category?
   @Binding var searchText: String
@@ -56,5 +56,5 @@ struct ItemsGroup: View {
 }
 
 //#Preview {
-//  ItemsGroup()
+//  ItemsGroupView()
 //}

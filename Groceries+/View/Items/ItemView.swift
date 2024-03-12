@@ -16,6 +16,7 @@ struct ItemView: View {
         Text(item.name)
           .foregroundColor(.primary)
           .font(.system(size: 16))
+          .multilineTextAlignment(.leading)
           .opacity(item.checked ? 1.0 : 0.5)
         Spacer()
       }
