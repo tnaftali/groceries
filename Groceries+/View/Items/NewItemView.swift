@@ -6,12 +6,15 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct NewItemView: View {
-  @State private var editedName = ""
+  @Query private var categories: [Category]
   @Environment(\.colorScheme) var colorScheme
   @Environment(\.presentationMode) var presentationMode
   @Environment(\.modelContext) private var modelContext
+  @State private var editedName = ""
+  @State private var selectedCategory: Category? = nil
   @FocusState private var isFocused: Bool
   
   var body: some View {
@@ -30,18 +33,28 @@ struct NewItemView: View {
               presentationMode.wrappedValue.dismiss()
             }
         }
-        .listRowBackground(Color(.systemGray5))
+        .listRowBackground(colorScheme == .dark ? Color(.systemGray5) : Color(.systemGray6))
+        Section(header: Text("Category")) {
+          Picker("Select category", selection: $selectedCategory) {
+            Text("None").tag(nil as Category?)
+            ForEach(categories, id: \.id) { category in
+              Text(category.name).tag(Optional(category))
+            }
+          }
+          
+        }
+        .listRowBackground(colorScheme == .dark ? Color(.systemGray5) : Color(.systemGray6))
         Section {
           Button("Save") {
-            let newItem = Item(name: editedName, checked: true)
+            let newItem = Item(name: editedName, checked: true, category: selectedCategory)
             modelContext.insert(newItem)
             presentationMode.wrappedValue.dismiss()
           }
         }
-        .listRowBackground(Color(.systemGray5))
+        .listRowBackground(colorScheme == .dark ? Color(.systemGray5) : Color(.systemGray6))
       }
       .scrollContentBackground(.hidden)
-      .background(colorScheme == .dark ? Color.customDarkColor : Color.customLightColor)
+      .background(colorScheme == .dark ? Color(.secondarySystemBackground) : Color(.systemBackground))
       .navigationBarTitle("New Item")
     }
   }

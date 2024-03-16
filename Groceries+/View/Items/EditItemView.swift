@@ -33,7 +33,7 @@ struct EditItemView: View {
               presentationMode.wrappedValue.dismiss()
             }
         }
-        .listRowBackground(Color(.systemGray5))
+        .listRowBackground(colorScheme == .dark ? Color(.systemGray5) : Color(.systemGray6))
         Section(header: Text("Category")) {
           Picker("Select category", selection: $selectedCategory) {
             Text("None").tag(nil as Category?)
@@ -45,19 +45,19 @@ struct EditItemView: View {
             item.category = selectedCategory
           }
         }
-        .listRowBackground(Color(.systemGray5))
+        .listRowBackground(colorScheme == .dark ? Color(.systemGray5) : Color(.systemGray6))
         Section(header: Text("Created On")) {
           Text(getFormattedDateString(date: item.creationDate))
             .foregroundColor(Color.gray)
         }
-        .listRowBackground(Color(.systemGray5))
+        .listRowBackground(colorScheme == .dark ? Color(.systemGray5) : Color(.systemGray6))
         Section {
           Button("Save") {
             item.name = editedName
             presentationMode.wrappedValue.dismiss()
           }
         }
-        .listRowBackground(Color(.systemGray5))
+        .listRowBackground(colorScheme == .dark ? Color(.systemGray5) : Color(.systemGray6))
         Section {
           Button("Delete") {
             modelContext.delete(item)
@@ -65,10 +65,10 @@ struct EditItemView: View {
           }
           .foregroundColor(.red)
         }
-        .listRowBackground(Color(.systemGray5))
+        .listRowBackground(colorScheme == .dark ? Color(.systemGray5) : Color(.systemGray6))
       }
       .scrollContentBackground(.hidden)
-      .background(colorScheme == .dark ? Color.customDarkColor : Color.customLightColor)
+      .background(colorScheme == .dark ? Color(.secondarySystemBackground) : Color(.systemBackground))
       .navigationBarTitle("Edit Item")
     }
   }

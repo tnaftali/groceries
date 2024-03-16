@@ -30,7 +30,7 @@ struct NewCategoryView: View {
               presentationMode.wrappedValue.dismiss()
             }
         }
-        .listRowBackground(Color(.systemGray5))
+        .listRowBackground(colorScheme == .dark ? Color(.systemGray5) : Color(.systemGray6))
         Section {
           Button("Save") {
             let newCategory = Category(name: editedName)
@@ -38,10 +38,10 @@ struct NewCategoryView: View {
             presentationMode.wrappedValue.dismiss()
           }
         }
-        .listRowBackground(Color(.systemGray5))
+        .listRowBackground(colorScheme == .dark ? Color(.systemGray5) : Color(.systemGray6))
       }
       .scrollContentBackground(.hidden)
-      .background(colorScheme == .dark ? Color.customDarkColor : Color.customLightColor)
+      .background(colorScheme == .dark ? Color(.secondarySystemBackground) : Color(.systemBackground))
       .navigationBarTitle("New Category")
     }
   }

@@ -25,6 +25,10 @@ struct ItemsGroupView: View {
     
     VStack(spacing: 5) {
       let indicesTwoByTwo = Array(stride(from: 0, through: filteredCategoryItems.count - 1, by: 2))
+//      ForEach(filteredCategoryItems, id: \.self) { item in
+//        ItemView(item: item)
+//                  .padding(.horizontal, 10)
+//      }
       ForEach(indicesTwoByTwo, id: \.self) { index in
         let item1 = filteredCategoryItems.count > index ? filteredCategoryItems[index] : nil
         let item2Index = index + 1
@@ -55,6 +59,7 @@ struct ItemsGroupView: View {
   }
 }
 
-//#Preview {
-//  ItemsGroupView()
-//}
+#Preview {
+  ItemsGroupView(category: nil, searchText: .constant(""))
+    .modelContainer(previewContainer)
+}

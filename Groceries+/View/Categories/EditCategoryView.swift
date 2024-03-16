@@ -30,19 +30,19 @@ struct EditCategoryView: View {
               presentationMode.wrappedValue.dismiss()
             }
         }
-        .listRowBackground(Color(.systemGray5))
+        .listRowBackground(colorScheme == .dark ? Color(.systemGray5) : Color(.systemGray6))
         Section(header: Text("Created On")) {
           Text(getFormattedDateString(date: category.creationDate))
             .foregroundColor(Color.gray)
         }
-        .listRowBackground(Color(.systemGray5))
+        .listRowBackground(colorScheme == .dark ? Color(.systemGray5) : Color(.systemGray6))
         Section {
           Button("Save") {
             category.name = editedName
             presentationMode.wrappedValue.dismiss()
           }
         }
-        .listRowBackground(Color(.systemGray5))
+        .listRowBackground(colorScheme == .dark ? Color(.systemGray5) : Color(.systemGray6))
         Section {
           Button("Delete") {
             modelContext.delete(category)
@@ -50,14 +50,13 @@ struct EditCategoryView: View {
           }
           .foregroundColor(.red)
         }
-        .listRowBackground(Color(.systemGray5))
+        .listRowBackground(colorScheme == .dark ? Color(.systemGray5) : Color(.systemGray6))
       }
       .scrollContentBackground(.hidden)
-      .background(colorScheme == .dark ? Color.customDarkColor : Color.customLightColor)
       .frame(maxHeight: .infinity)
       .navigationBarTitle("Edit Category")
     }
-    .background(colorScheme == .dark ? Color.customDarkColor : Color.customLightColor)
+    .background(colorScheme == .dark ? Color(.secondarySystemBackground) : Color(.systemBackground))
   }
   
   func getFormattedDateString(date: Date) -> String {
