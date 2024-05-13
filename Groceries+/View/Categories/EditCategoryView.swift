@@ -31,11 +31,11 @@ struct EditCategoryView: View {
             }
         }
         .listRowBackground(colorScheme == .dark ? Color(.systemGray5) : Color(.systemGray6))
-        Section(header: Text("Created On")) {
-          Text(getFormattedDateString(date: category.creationDate))
-            .foregroundColor(Color.gray)
-        }
-        .listRowBackground(colorScheme == .dark ? Color(.systemGray5) : Color(.systemGray6))
+//        Section(header: Text("Created On")) {
+//          Text(getFormattedDateString(date: category.creationDate))
+//            .foregroundColor(Color.gray)
+//        }
+//        .listRowBackground(colorScheme == .dark ? Color(.systemGray5) : Color(.systemGray6))
         Section {
           Button("Save") {
             category.name = editedName

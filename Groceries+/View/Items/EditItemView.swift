@@ -21,6 +21,11 @@ struct EditItemView: View {
   var body: some View {
     VStack {
       Form {
+//        Section(header: Text("ID")) {
+//          Text("\(item.id)")
+//            .foregroundColor(Color.gray)
+//        }
+//        .listRowBackground(colorScheme == .dark ? Color(.systemGray5) : Color(.systemGray6))
         Section(header: Text("Name")) {
           TextField("Enter name here", text: $editedName)
             .autocorrectionDisabled()
@@ -41,19 +46,17 @@ struct EditItemView: View {
               Text(category.name).tag(Optional(category))
             }
           }
-          .onChange(of: selectedCategory) {
-            item.category = selectedCategory
-          }
         }
         .listRowBackground(colorScheme == .dark ? Color(.systemGray5) : Color(.systemGray6))
-        Section(header: Text("Created On")) {
-          Text(getFormattedDateString(date: item.creationDate))
-            .foregroundColor(Color.gray)
-        }
-        .listRowBackground(colorScheme == .dark ? Color(.systemGray5) : Color(.systemGray6))
+//        Section(header: Text("Created On")) {
+//          Text(getFormattedDateString(date: item.creationDate))
+//            .foregroundColor(Color.gray)
+//        }
+//        .listRowBackground(colorScheme == .dark ? Color(.systemGray5) : Color(.systemGray6))
         Section {
           Button("Save") {
             item.name = editedName
+            item.category = selectedCategory
             presentationMode.wrappedValue.dismiss()
           }
         }
