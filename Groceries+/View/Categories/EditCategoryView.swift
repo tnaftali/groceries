@@ -15,7 +15,8 @@ struct EditCategoryView: View {
   @Environment(\.presentationMode) var presentationMode
   @Environment(\.modelContext) private var modelContext
   @State private var editedName = ""
-  
+  @Query(sort: \Item.name) private var items: [Item]
+
   var body: some View {
     VStack {
       Form {
@@ -45,6 +46,14 @@ struct EditCategoryView: View {
         .listRowBackground(colorScheme == .dark ? Color(.systemGray5) : Color(.systemGray6))
         Section {
           Button("Delete") {
+            var categoryItems: [Item] {
+              return items.filter { $0.category == category }
+            }
+            
+            categoryItems.forEach { item in
+              item.category = nil;
+            }
+
             modelContext.delete(category)
             presentationMode.wrappedValue.dismiss()
           }
