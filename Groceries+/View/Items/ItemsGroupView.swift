@@ -13,13 +13,16 @@ struct ItemsGroupView: View {
   @Query(sort: \Item.name) private var items: [Item]
   var category: Category?
   @Binding var searchText: String
-  
+  @Binding var toggleChecked: Bool
+
   var body: some View {
     var filteredCategoryItems: [Item] {
       if searchText.isEmpty {
-        return items.filter { $0.category == category }
+//        return items.filter { $0.category == category }
+        return toggleChecked ? items.filter { $0.category == category && $0.checked == toggleChecked } : items.filter { $0.category == category }
       } else {
-        return items.filter { $0.category == category && $0.name.localizedCaseInsensitiveContains(searchText) }
+//        return items.filter { $0.category == category && $0.name.localizedCaseInsensitiveContains(searchText) }
+        return toggleChecked ? items.filter { $0.category == category && $0.name.localizedCaseInsensitiveContains(searchText) && $0.checked == toggleChecked } : items.filter { $0.category == category && $0.name.localizedCaseInsensitiveContains(searchText) }
       }
     }
     
@@ -60,6 +63,6 @@ struct ItemsGroupView: View {
 }
 
 #Preview {
-  ItemsGroupView(category: nil, searchText: .constant(""))
+  ItemsGroupView(category: nil, searchText: .constant(""), toggleChecked: .constant(true))
     .modelContainer(previewContainer)
 }

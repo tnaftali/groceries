@@ -11,6 +11,8 @@
 		D25BB4992B9C82E7006B585B /* Category.swift in Sources */ = {isa = PBXBuildFile; fileRef = D25BB4982B9C82E7006B585B /* Category.swift */; };
 		D25BB49D2B9C9DE2006B585B /* NewCategoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D25BB49C2B9C9DE2006B585B /* NewCategoryView.swift */; };
 		D25BB4A02B9CCE6C006B585B /* ItemsGroupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D25BB49F2B9CCE6C006B585B /* ItemsGroupView.swift */; };
+		D29EF2762C08776800EA87E7 /* PopoverStoreView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D29EF2752C08776800EA87E7 /* PopoverStoreView.swift */; };
+		D29EF2782C08C5B800EA87E7 /* Store.swift in Sources */ = {isa = PBXBuildFile; fileRef = D29EF2772C08C5B800EA87E7 /* Store.swift */; };
 		D2B1161F2B9B5D4200DB9956 /* Groceries_App.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2B1161E2B9B5D4200DB9956 /* Groceries_App.swift */; };
 		D2B116212B9B5D4200DB9956 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2B116202B9B5D4200DB9956 /* ContentView.swift */; };
 		D2B116232B9B5D4300DB9956 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D2B116222B9B5D4300DB9956 /* Assets.xcassets */; };
@@ -26,9 +28,12 @@
 
 /* Begin PBXFileReference section */
 		D232387E2B9F8A2F004DA3D4 /* EditCategoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditCategoryView.swift; sourceTree = "<group>"; };
+		D25353C62C07594000AA3010 /* StoreKit.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; name = StoreKit.storekit; path = "Groceries+/StoreKit.storekit"; sourceTree = SOURCE_ROOT; };
 		D25BB4982B9C82E7006B585B /* Category.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Category.swift; sourceTree = "<group>"; };
 		D25BB49C2B9C9DE2006B585B /* NewCategoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewCategoryView.swift; sourceTree = "<group>"; };
 		D25BB49F2B9CCE6C006B585B /* ItemsGroupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemsGroupView.swift; sourceTree = "<group>"; };
+		D29EF2752C08776800EA87E7 /* PopoverStoreView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopoverStoreView.swift; sourceTree = "<group>"; };
+		D29EF2772C08C5B800EA87E7 /* Store.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Store.swift; sourceTree = "<group>"; };
 		D2B1161B2B9B5D4200DB9956 /* Groceries+.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Groceries+.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		D2B1161E2B9B5D4200DB9956 /* Groceries_App.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Groceries_App.swift; sourceTree = "<group>"; };
 		D2B116202B9B5D4200DB9956 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -95,6 +100,7 @@
 		D2B1161D2B9B5D4200DB9956 /* Groceries+ */ = {
 			isa = PBXGroup;
 			children = (
+				D25353C62C07594000AA3010 /* StoreKit.storekit */,
 				D2B1162F2B9B5D9F00DB9956 /* Support */,
 				D2B1162E2B9B5D9500DB9956 /* View */,
 				D2B1162D2B9B5D9000DB9956 /* Model */,
@@ -103,6 +109,7 @@
 				D2B116222B9B5D4300DB9956 /* Assets.xcassets */,
 				D2B116242B9B5D4300DB9956 /* Groceries_.entitlements */,
 				D2B116252B9B5D4300DB9956 /* Preview Content */,
+				D29EF2772C08C5B800EA87E7 /* Store.swift */,
 			);
 			path = "Groceries+";
 			sourceTree = "<group>";
@@ -130,6 +137,7 @@
 			children = (
 				D232387D2B9F8703004DA3D4 /* Categories */,
 				D232387B2B9F86C2004DA3D4 /* Items */,
+				D29EF2752C08776800EA87E7 /* PopoverStoreView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -212,10 +220,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D29EF2782C08C5B800EA87E7 /* Store.swift in Sources */,
 				D2B1163B2B9B5DE200DB9956 /* SampleItems.swift in Sources */,
 				D25BB4992B9C82E7006B585B /* Category.swift in Sources */,
 				D2B116342B9B5DC200DB9956 /* NewItemView.swift in Sources */,
 				D2B116362B9B5DC200DB9956 /* ItemListView.swift in Sources */,
+				D29EF2762C08776800EA87E7 /* PopoverStoreView.swift in Sources */,
 				D232387F2B9F8A2F004DA3D4 /* EditCategoryView.swift in Sources */,
 				D2B116212B9B5D4200DB9956 /* ContentView.swift in Sources */,
 				D25BB4A02B9CCE6C006B585B /* ItemsGroupView.swift in Sources */,

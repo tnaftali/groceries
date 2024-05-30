@@ -14,14 +14,15 @@ struct ItemListView: View {
   @Query(sort: \Category.name) private var categories: [Category]
   @Environment(\.colorScheme) var colorScheme
   @State private var searchText = ""
+  @State private var toggleChecked = false
   @FocusState private var isFocused: Bool
   
   var body: some View {
     var filteredItems: [Item] {
       if searchText.isEmpty {
-        return items
+        return toggleChecked ? items.filter { $0.checked == toggleChecked } : items
       } else {
-        return items.filter { $0.name.localizedCaseInsensitiveContains(searchText) }
+        return toggleChecked ? items.filter { $0.checked == toggleChecked && $0.name.localizedCaseInsensitiveContains(searchText) } : items.filter { $0.name.localizedCaseInsensitiveContains(searchText) }
       }
     }
     
@@ -57,7 +58,7 @@ struct ItemListView: View {
                 }
               }
             }
-              .padding(.horizontal, 16)
+            .padding(.horizontal, 16)
           )
           .autocorrectionDisabled()
         
@@ -66,9 +67,17 @@ struct ItemListView: View {
           Divider()
         }
         
+        if filteredItems.count == 0 {
+          Divider()
+          Text("🛒 No pending groceries")
+            .font(.system(size: 18))
+            .foregroundColor(.primary)
+            .padding(.top, 20)
+        }
+
         ScrollView {
           VStack(spacing: 5) {
-            ItemsGroupView(category: nil, searchText: $searchText)
+            ItemsGroupView(category: nil, searchText: $searchText, toggleChecked: $toggleChecked)
             
             ForEach(categories, id: \.self) { category in
               let categoryHasItems = filteredItems.filter { $0.category == category }.count > 0
@@ -95,7 +104,7 @@ struct ItemListView: View {
                 }
                 .frame(height: 30)
                 
-                ItemsGroupView(category: category, searchText: $searchText)
+                ItemsGroupView(category: category, searchText: $searchText, toggleChecked: $toggleChecked)
               }
             }
           }
@@ -107,18 +116,34 @@ struct ItemListView: View {
           GeometryReader { geometry in
             HStack {
               Spacer()
-              NavigationLink(destination: NewItemView()) {
-                Image(systemName: "plus")
-                  .font(.system(size: 40))
-                  .padding(10)
-                  .padding(.horizontal, 20)
-                  .background(Color.blue)
-                  .foregroundColor(.white)
-                  .clipShape(Circle())
-                  .shadow(radius: 8)
+              VStack {
+                Button(action: {
+                  toggleChecked.toggle()
+                }) {
+                  Image(systemName: toggleChecked ? "checklist.unchecked" : "checklist.checked")
+                    .font(.system(size: 20))
+                    .padding(10)
+                    .padding(.horizontal, 10)
+                    .background(Color(.systemGray2))
+                    .foregroundColor(.white)
+                    .clipShape(Circle())
+                    .shadow(radius: 8)
+                    .padding(.bottom, 10)
+                }
+
+                NavigationLink(destination: NewItemView()) {
+                  Image(systemName: "plus")
+                    .font(.system(size: 40))
+                    .padding(10)
+                    .padding(.horizontal, 10)
+                    .background(Color.blue)
+                    .foregroundColor(.white)
+                    .clipShape(Circle())
+                    .shadow(radius: 8)
+                }
               }
             }
-            .frame(width: geometry.size.width - 10, height: geometry.size.height * 2 - 60)
+            .frame(width: geometry.size.width - 10, height: geometry.size.height * 2 - 120)
           }
         }
       )
