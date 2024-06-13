@@ -121,26 +121,31 @@ struct ItemListView: View {
                   toggleChecked.toggle()
                 }) {
                   Image(systemName: toggleChecked ? "checklist.unchecked" : "checklist.checked")
-                    .font(.system(size: 20))
-                    .padding(10)
-                    .padding(.horizontal, 10)
-                    .background(Color(.systemGray2))
-                    .foregroundColor(.white)
-                    .clipShape(Circle())
-                    .shadow(radius: 8)
-                    .padding(.bottom, 10)
-                }
-
-                NavigationLink(destination: NewItemView()) {
-                  Image(systemName: "plus")
-                    .font(.system(size: 40))
-                    .padding(10)
+                    .font(.system(size: 28))
+                    .padding(12)
                     .padding(.horizontal, 10)
                     .background(Color.blue)
                     .foregroundColor(.white)
                     .clipShape(Circle())
                     .shadow(radius: 8)
+                    .padding(.bottom, 10)
                 }
+                
+                NavigationLink(destination: NewItemView()) {
+                  Image(systemName: "plus")
+                    .font(.system(size: 28))
+                    .padding(12)
+                    .padding(.horizontal, 10)
+                    .background(colorScheme == .dark ? Color(Color.customDarkColor2) : Color.white)
+                    .foregroundColor(.accentColor)
+                    .clipShape(Circle())
+                    .shadow(radius: 8)
+                    .overlay(
+                      Circle()
+                        .stroke(Color.blue, lineWidth: 2)
+                    )
+                }
+
               }
             }
             .frame(width: geometry.size.width - 10, height: geometry.size.height * 2 - 120)

@@ -23,7 +23,7 @@ struct NewItemView: View {
 
   var body: some View {
     var showPopover: Bool {
-      return items.count > 2
+      return items.count > 20
     }
 
     ZStack {
