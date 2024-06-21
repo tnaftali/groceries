@@ -1,5 +1,5 @@
 {
-  "identifier" : "82F41E7D",
+  "identifier" : "7ADEBD8F",
   "nonRenewingSubscriptions" : [
 
   ],
@@ -7,7 +7,7 @@
     {
       "displayPrice" : "3.99",
       "familyShareable" : false,
-      "internalID" : "52AE40A6",
+      "internalID" : "6504673774",
       "localizations" : [
         {
           "description" : "Unlimited items, one-time purchase",
@@ -21,8 +21,10 @@
     }
   ],
   "settings" : {
-    "_billingIssuesEnabled" : false,
+    "_applicationInternalID" : "6504673683",
+    "_developerTeamID" : "85GE3C3C5N",
     "_failTransactionsEnabled" : false,
+    "_lastSynchronizedDate" : 740658783.81111705,
     "_locale" : "en_US",
     "_storefront" : "USA",
     "_storeKitErrors" : [

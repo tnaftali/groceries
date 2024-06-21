@@ -11,6 +11,7 @@
 		D25BB4992B9C82E7006B585B /* Category.swift in Sources */ = {isa = PBXBuildFile; fileRef = D25BB4982B9C82E7006B585B /* Category.swift */; };
 		D25BB49D2B9C9DE2006B585B /* NewCategoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D25BB49C2B9C9DE2006B585B /* NewCategoryView.swift */; };
 		D25BB4A02B9CCE6C006B585B /* ItemsGroupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D25BB49F2B9CCE6C006B585B /* ItemsGroupView.swift */; };
+		D263DCB52C258DFF00C27D18 /* StoreKit Config.storekit in Resources */ = {isa = PBXBuildFile; fileRef = D263DCB42C258DFF00C27D18 /* StoreKit Config.storekit */; };
 		D29EF2762C08776800EA87E7 /* PopoverStoreView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D29EF2752C08776800EA87E7 /* PopoverStoreView.swift */; };
 		D29EF2782C08C5B800EA87E7 /* Store.swift in Sources */ = {isa = PBXBuildFile; fileRef = D29EF2772C08C5B800EA87E7 /* Store.swift */; };
 		D2B1161F2B9B5D4200DB9956 /* Groceries_App.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2B1161E2B9B5D4200DB9956 /* Groceries_App.swift */; };
@@ -28,10 +29,10 @@
 
 /* Begin PBXFileReference section */
 		D232387E2B9F8A2F004DA3D4 /* EditCategoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditCategoryView.swift; sourceTree = "<group>"; };
-		D25353C62C07594000AA3010 /* StoreKit.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; name = StoreKit.storekit; path = "Groceries+/StoreKit.storekit"; sourceTree = SOURCE_ROOT; };
 		D25BB4982B9C82E7006B585B /* Category.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Category.swift; sourceTree = "<group>"; };
 		D25BB49C2B9C9DE2006B585B /* NewCategoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewCategoryView.swift; sourceTree = "<group>"; };
 		D25BB49F2B9CCE6C006B585B /* ItemsGroupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemsGroupView.swift; sourceTree = "<group>"; };
+		D263DCB42C258DFF00C27D18 /* StoreKit Config.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; path = "StoreKit Config.storekit"; sourceTree = "<group>"; };
 		D29EF2752C08776800EA87E7 /* PopoverStoreView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopoverStoreView.swift; sourceTree = "<group>"; };
 		D29EF2772C08C5B800EA87E7 /* Store.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Store.swift; sourceTree = "<group>"; };
 		D2B1161B2B9B5D4200DB9956 /* Groceries+.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Groceries+.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -100,7 +101,6 @@
 		D2B1161D2B9B5D4200DB9956 /* Groceries+ */ = {
 			isa = PBXGroup;
 			children = (
-				D25353C62C07594000AA3010 /* StoreKit.storekit */,
 				D2B1162F2B9B5D9F00DB9956 /* Support */,
 				D2B1162E2B9B5D9500DB9956 /* View */,
 				D2B1162D2B9B5D9000DB9956 /* Model */,
@@ -110,6 +110,7 @@
 				D2B116242B9B5D4300DB9956 /* Groceries_.entitlements */,
 				D2B116252B9B5D4300DB9956 /* Preview Content */,
 				D29EF2772C08C5B800EA87E7 /* Store.swift */,
+				D263DCB42C258DFF00C27D18 /* StoreKit Config.storekit */,
 			);
 			path = "Groceries+";
 			sourceTree = "<group>";
@@ -209,6 +210,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				D2B116272B9B5D4300DB9956 /* Preview Assets.xcassets in Resources */,
+				D263DCB52C258DFF00C27D18 /* StoreKit Config.storekit in Resources */,
 				D2B116232B9B5D4300DB9956 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -371,6 +373,7 @@
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
@@ -379,8 +382,7 @@
 				"INFOPLIST_KEY_UILaunchScreen_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphoneos*]" = UIStatusBarStyleDefault;
 				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphonesimulator*]" = UIStatusBarStyleDefault;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				IPHONEOS_DEPLOYMENT_TARGET = 17.2;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
@@ -389,7 +391,8 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "com.tnaftali.groceries.Groceries-";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = auto;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -410,6 +413,7 @@
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
@@ -418,8 +422,7 @@
 				"INFOPLIST_KEY_UILaunchScreen_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphoneos*]" = UIStatusBarStyleDefault;
 				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphonesimulator*]" = UIStatusBarStyleDefault;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				IPHONEOS_DEPLOYMENT_TARGET = 17.2;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
@@ -428,7 +431,8 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "com.tnaftali.groceries.Groceries-";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = auto;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";

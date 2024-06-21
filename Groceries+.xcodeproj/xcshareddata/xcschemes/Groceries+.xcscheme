@@ -51,7 +51,7 @@
          </BuildableReference>
       </BuildableProductRunnable>
       <StoreKitConfigurationFileReference
-         identifier = "../../Groceries+/StoreKit.storekit">
+         identifier = "../../Groceries+/StoreKit Config.storekit">
       </StoreKitConfigurationFileReference>
    </LaunchAction>
    <ProfileAction
