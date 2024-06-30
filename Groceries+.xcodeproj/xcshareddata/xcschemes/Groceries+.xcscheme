@@ -16,7 +16,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "D2B1161A2B9B5D4200DB9956"
-               BuildableName = "Groceries+.app"
+               BuildableName = "Groceries.app"
                BlueprintName = "Groceries+"
                ReferencedContainer = "container:Groceries+.xcodeproj">
             </BuildableReference>
@@ -45,7 +45,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "D2B1161A2B9B5D4200DB9956"
-            BuildableName = "Groceries+.app"
+            BuildableName = "Groceries.app"
             BlueprintName = "Groceries+"
             ReferencedContainer = "container:Groceries+.xcodeproj">
          </BuildableReference>
@@ -65,7 +65,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "D2B1161A2B9B5D4200DB9956"
-            BuildableName = "Groceries+.app"
+            BuildableName = "Groceries.app"
             BlueprintName = "Groceries+"
             ReferencedContainer = "container:Groceries+.xcodeproj">
          </BuildableReference>

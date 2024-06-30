@@ -6,14 +6,18 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct NewCategoryView: View {
   @State private var editedName = ""
+  @Query(sort: \Category.name) private var categories: [Category]
   @Environment(\.colorScheme) var colorScheme
   @Environment(\.presentationMode) var presentationMode
   @Environment(\.modelContext) private var modelContext
   @FocusState private var isFocused: Bool
-  
+  @State private var showEmptyError = false
+  @State private var showDuplicatedError = false
+
   var body: some View {
     VStack {
       Form {
@@ -25,24 +29,52 @@ struct NewCategoryView: View {
               isFocused = true
             }
             .onSubmit {
-              let newCategory = Category(name: editedName)
-              modelContext.insert(newCategory)
-              presentationMode.wrappedValue.dismiss()
+              handleFormSubmission()
             }
+          
+          if showEmptyError {
+            Text("Name cannot be empty.")
+              .foregroundColor(.red)
+              .font(.caption)
+          }
+          
+          if showDuplicatedError {
+            Text("A category with this name already exists.")
+              .foregroundColor(.red)
+              .font(.caption)
+          }
         }
         .listRowBackground(colorScheme == .dark ? Color(.systemGray5) : Color(.systemGray6))
         Section {
           Button("Save") {
-            let newCategory = Category(name: editedName)
-            modelContext.insert(newCategory)
-            presentationMode.wrappedValue.dismiss()
+            handleFormSubmission()
           }
         }
         .listRowBackground(colorScheme == .dark ? Color(.systemGray5) : Color(.systemGray6))
       }
       .scrollContentBackground(.hidden)
       .background(colorScheme == .dark ? Color(.secondarySystemBackground) : Color(.systemBackground))
-      .navigationBarTitle("New Category")
+      .navigationBarTitle("Add Category")
+    }
+  }
+  
+  private func handleFormSubmission() {
+    if editedName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+      showEmptyError = true
+      showDuplicatedError = false
+      isFocused = true
+    } else {
+      if categories.contains(where: { $0.name == editedName }) {
+        showEmptyError = false
+        showDuplicatedError = true
+        isFocused = true
+      } else {
+        showEmptyError = false
+        showDuplicatedError = false
+        let newCategory = Category(name: editedName)
+        modelContext.insert(newCategory)
+        presentationMode.wrappedValue.dismiss()
+      }
     }
   }
 }

@@ -121,7 +121,7 @@ struct ItemListView: View {
                   toggleChecked.toggle()
                 }) {
                   Image(systemName: toggleChecked ? "checklist.unchecked" : "checklist.checked")
-                    .font(.system(size: 28))
+                    .font(.system(size: 32))
                     .padding(12)
                     .padding(.horizontal, 10)
                     .background(Color.blue)
@@ -131,24 +131,24 @@ struct ItemListView: View {
                     .padding(.bottom, 10)
                 }
                 
-                NavigationLink(destination: NewItemView()) {
-                  Image(systemName: "plus")
-                    .font(.system(size: 28))
-                    .padding(12)
-                    .padding(.horizontal, 10)
-                    .background(colorScheme == .dark ? Color(Color.customDarkColor2) : Color.white)
-                    .foregroundColor(.accentColor)
-                    .clipShape(Circle())
-                    .shadow(radius: 8)
-                    .overlay(
-                      Circle()
-                        .stroke(Color.blue, lineWidth: 2)
-                    )
-                }
+//                NavigationLink(destination: NewItemView()) {
+//                  Image(systemName: "plus")
+//                    .font(.system(size: 28))
+//                    .padding(12)
+//                    .padding(.horizontal, 10)
+//                    .background(colorScheme == .dark ? Color(Color.customDarkColor2) : Color.white)
+//                    .foregroundColor(.accentColor)
+//                    .clipShape(Circle())
+//                    .shadow(radius: 8)
+//                    .overlay(
+//                      Circle()
+//                        .stroke(Color.blue, lineWidth: 2)
+//                    )
+//                }
 
               }
             }
-            .frame(width: geometry.size.width - 10, height: geometry.size.height * 2 - 120)
+            .frame(width: geometry.size.width - 10, height: geometry.size.height * 2 - 60)
           }
         }
       )
@@ -165,8 +165,8 @@ struct ItemListView: View {
               .padding(.top, 15)
           },
         trailing: HStack(alignment: .center) {
-          NavigationLink(destination: NewCategoryView()) {
-            Text("New Category")
+          NavigationLink(destination: NewItemView()) {
+            Text("Add item")
               .padding(.top, 15)
           }
         }
