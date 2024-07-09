@@ -11,17 +11,7 @@ struct ItemView: View {
   @Bindable var item: Item
   
   var body: some View {
-    HStack(spacing: 0) {
-      NavigationLink(destination: EditItemView(item: item)) {
-        Text(item.name)
-          .foregroundColor(.primary)
-          .font(.system(size: 16))
-          .multilineTextAlignment(.leading)
-          .opacity(item.checked ? 1.0 : 0.5)
-        Spacer()
-      }
-      .frame(height: 40)
-      
+    HStack(spacing: 10) {
       Toggle(isOn: Binding(
         get: { item.checked },
         set: { newValue in
@@ -36,8 +26,18 @@ struct ItemView: View {
       .toggleStyle(SwitchToggleStyle(tint: .blue))
       .accentColor(.blue)
       .frame(width: 50)
+      
+      NavigationLink(destination: EditItemView(item: item)) {
+        Text(item.name)
+          .foregroundColor(.primary)
+          .font(.system(size: 16))
+          .multilineTextAlignment(.leading)
+          .opacity(item.checked ? 1.0 : 0.5)
+        Spacer()
+      }
+      .frame(height: 40)
+      
     }
-//    .background(Color.green)
     .frame(height: 40)
   }
 }

@@ -9,6 +9,8 @@ import SwiftUI
 import SwiftData
 
 struct NewCategoryView: View {
+  var onCategoryCreated: (Category) -> Void
+  
   @State private var editedName = ""
   @Query(sort: \Category.name) private var categories: [Category]
   @Environment(\.colorScheme) var colorScheme
@@ -73,6 +75,7 @@ struct NewCategoryView: View {
         showDuplicatedError = false
         let newCategory = Category(name: editedName)
         modelContext.insert(newCategory)
+        onCategoryCreated(newCategory) // Call the callback with the new Category
         presentationMode.wrappedValue.dismiss()
       }
     }
@@ -80,5 +83,5 @@ struct NewCategoryView: View {
 }
 
 #Preview {
-  NewCategoryView()
+  NewCategoryView(onCategoryCreated: { _ in })
 }

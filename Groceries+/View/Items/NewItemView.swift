@@ -23,6 +23,8 @@ struct NewItemView: View {
   @State private var showEmptyError = false
   @State private var showDuplicatedError = false
   @State private var showNewCategoryView = false
+  
+  private let addCategoryFlag = Category(name: "ADD_CATEGORY_FLAG")
 
   var body: some View {
     var showPopover: Bool {
@@ -66,10 +68,10 @@ struct NewItemView: View {
               HStack(alignment: .center) {
                 Image(systemName: "plus.circle")
                 Text("Add category")
-              }.tag(Optional<Category>(Category(name: "")))
+              }.tag(Optional(addCategoryFlag))
             }
             .onChange(of: selectedCategory) {
-              if selectedCategory!.name == "" {
+              if selectedCategory == addCategoryFlag {
                 showNewCategoryView = true
               }
             }
@@ -97,7 +99,10 @@ struct NewItemView: View {
                   .padding()
               }
             }
-            NewCategoryView()
+            NewCategoryView(onCategoryCreated: { newCategory in
+              self.selectedCategory = newCategory
+              self.showNewCategoryView = false
+            })
           }
           .background(colorScheme == .dark ? Color(.secondarySystemBackground) : Color(.systemBackground))
         }

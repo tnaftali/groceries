@@ -73,6 +73,8 @@ struct ItemListView: View {
             .font(.system(size: 18))
             .foregroundColor(.primary)
             .padding(.top, 20)
+            .padding(.bottom, 20)
+          Divider()
         }
 
         ScrollView {
@@ -80,32 +82,29 @@ struct ItemListView: View {
             ItemsGroupView(category: nil, searchText: $searchText, toggleChecked: $toggleChecked)
             
             ForEach(categories, id: \.self) { category in
-              let categoryHasItems = filteredItems.filter { $0.category == category }.count > 0
-              if categoryHasItems {
-                GeometryReader { geometry in
-                  ZStack(alignment: .leading) {
-                    Rectangle()
-                      .foregroundColor(colorScheme == .dark ? Color(.systemGray5) : Color(.systemGray6))
-                      .frame(width: geometry.size.width)
-                    NavigationLink(destination: EditCategoryView(category: category)) {
-                      HStack(alignment: .center) {
-                        Text(category.name)
-                          .font(.system(size: 16))
-                          .opacity(0.9)
-                          .fontWeight(.semibold)
-                          .foregroundColor(.primary)
-                          .padding(.leading, 10)
-                        Image(systemName: "chevron.right")
-                          .foregroundColor(.primary)
-                          .font(.system(size: 16, weight: .semibold))
-                      }
+              GeometryReader { geometry in
+                ZStack(alignment: .leading) {
+                  Rectangle()
+                    .foregroundColor(colorScheme == .dark ? Color(.systemGray5) : Color(.systemGray6))
+                    .frame(width: geometry.size.width)
+                  NavigationLink(destination: EditCategoryView(category: category)) {
+                    HStack(alignment: .center) {
+                      Text(category.name)
+                        .font(.system(size: 16))
+                        .opacity(0.9)
+                        .fontWeight(.semibold)
+                        .foregroundColor(.primary)
+                        .padding(.leading, 10)
+                      Image(systemName: "chevron.right")
+                        .foregroundColor(.primary)
+                        .font(.system(size: 16, weight: .semibold))
                     }
                   }
                 }
-                .frame(height: 30)
-                
-                ItemsGroupView(category: category, searchText: $searchText, toggleChecked: $toggleChecked)
               }
+              .frame(height: 30)
+              
+              ItemsGroupView(category: category, searchText: $searchText, toggleChecked: $toggleChecked)
             }
           }
           .padding(.bottom, 80)
@@ -130,22 +129,6 @@ struct ItemListView: View {
                     .shadow(radius: 8)
                     .padding(.bottom, 10)
                 }
-                
-//                NavigationLink(destination: NewItemView()) {
-//                  Image(systemName: "plus")
-//                    .font(.system(size: 28))
-//                    .padding(12)
-//                    .padding(.horizontal, 10)
-//                    .background(colorScheme == .dark ? Color(Color.customDarkColor2) : Color.white)
-//                    .foregroundColor(.accentColor)
-//                    .clipShape(Circle())
-//                    .shadow(radius: 8)
-//                    .overlay(
-//                      Circle()
-//                        .stroke(Color.blue, lineWidth: 2)
-//                    )
-//                }
-
               }
             }
             .frame(width: geometry.size.width - 10, height: geometry.size.height * 2 - 60)

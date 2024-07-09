@@ -12,25 +12,26 @@ import Foundation
 struct EditItemView: View {
   @Query private var categories: [Category]
   @Query(sort: \Item.name) private var items: [Item]
+  
   @Bindable var item: Item
+  
   @Environment(\.colorScheme) var colorScheme
   @Environment(\.presentationMode) var presentationMode
   @Environment(\.modelContext) private var modelContext
+  
   @FocusState private var isFocused: Bool
+  
   @State private var editedName = ""
   @State private var selectedCategory: Category? = nil
   @State private var showEmptyError = false
   @State private var showDuplicatedError = false
   @State private var showNewCategoryView = false
+  
+  private let addCategoryFlag = Category(name: "ADD_CATEGORY_FLAG")
 
   var body: some View {
     VStack {
       Form {
-//        Section(header: Text("ID")) {
-//          Text("\(item.id)")
-//            .foregroundColor(Color.gray)
-//        }
-//        .listRowBackground(colorScheme == .dark ? Color(.systemGray5) : Color(.systemGray6))
         Section(header: Text("Name")) {
           TextField("Enter name here", text: $editedName)
             .focused($isFocused)
@@ -65,20 +66,15 @@ struct EditItemView: View {
             HStack(alignment: .center) {
               Image(systemName: "plus.circle")
               Text("Add category")
-            }.tag(Optional<Category>(Category(name: "")))
+            }.tag(Optional(addCategoryFlag))
           }
           .onChange(of: selectedCategory) {
-            if selectedCategory!.name == "" {
+            if selectedCategory == addCategoryFlag {
               showNewCategoryView = true
             }
           }
         }
         .listRowBackground(colorScheme == .dark ? Color(.systemGray5) : Color(.systemGray6))
-//        Section(header: Text("Created On")) {
-//          Text(getFormattedDateString(date: item.creationDate))
-//            .foregroundColor(Color.gray)
-//        }
-//        .listRowBackground(colorScheme == .dark ? Color(.systemGray5) : Color(.systemGray6))
         Section {
           Button("Save") {
             handleFormSubmission()
@@ -108,7 +104,10 @@ struct EditItemView: View {
                 .padding()
             }
           }
-          NewCategoryView()
+          NewCategoryView(onCategoryCreated: { newCategory in
+            self.selectedCategory = newCategory
+            self.showNewCategoryView = false
+          })
         }
         .background(colorScheme == .dark ? Color(.secondarySystemBackground) : Color(.systemBackground))
       }
