@@ -12,17 +12,23 @@ import StoreKit
 struct NewItemView: View {
   @Query private var categories: [Category]
   @Query(sort: \Item.name) private var items: [Item]
+  
   @Environment(\.colorScheme) var colorScheme
   @Environment(\.presentationMode) var presentationMode
   @Environment(\.modelContext) private var modelContext
+  
   @State private var editedName = ""
   @State private var selectedCategory: Category? = nil
-  @State var showingPopover = false
-  @StateObject private var store = Store()
-  @FocusState private var isFocused: Bool
+  @State private var recurring: Bool = true
   @State private var showEmptyError = false
   @State private var showDuplicatedError = false
   @State private var showNewCategoryView = false
+  @State var showingPopover = false
+
+  @StateObject private var store = Store()
+  
+  @FocusState private var isFocused: Bool
+  
   
   private let addCategoryFlag = Category(name: "ADD_CATEGORY_FLAG")
 
@@ -74,6 +80,14 @@ struct NewItemView: View {
               if selectedCategory == addCategoryFlag {
                 showNewCategoryView = true
               }
+            }
+          }
+          .listRowBackground(colorScheme == .dark ? Color(.systemGray5) : Color(.systemGray6))
+          
+          Section(header: Text("Recurring")) {
+            Picker("Recurring item", selection: $recurring) {
+              Text("Yes").tag(true as Bool)
+              Text("No").tag(false as Bool)
             }
           }
           .listRowBackground(colorScheme == .dark ? Color(.systemGray5) : Color(.systemGray6))
@@ -152,7 +166,7 @@ struct NewItemView: View {
       } else {
         showEmptyError = false
         showDuplicatedError = false
-        let newItem = Item(name: editedName, checked: true, category: selectedCategory)
+        let newItem = Item(name: editedName, checked: true, category: selectedCategory, recurring: recurring)
         modelContext.insert(newItem)
         presentationMode.wrappedValue.dismiss()
       }

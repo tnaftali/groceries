@@ -20,7 +20,7 @@ struct ItemsGroupView: View {
       if searchText.isEmpty {
         return toggleChecked ? items.filter { $0.category == category && $0.checked == toggleChecked } : items.filter { $0.category == category }
       } else {
-        return toggleChecked ? items.filter { $0.category == category && $0.name.localizedCaseInsensitiveContains(searchText) && $0.checked == toggleChecked } : items.filter { $0.category == category && $0.name.localizedCaseInsensitiveContains(searchText) }
+        return items.filter { $0.category == category && $0.name.localizedCaseInsensitiveContains(searchText) }
       }
     }
     

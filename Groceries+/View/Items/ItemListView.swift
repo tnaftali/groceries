@@ -22,7 +22,7 @@ struct ItemListView: View {
       if searchText.isEmpty {
         return toggleChecked ? items.filter { $0.checked == toggleChecked } : items
       } else {
-        return toggleChecked ? items.filter { $0.checked == toggleChecked && $0.name.localizedCaseInsensitiveContains(searchText) } : items.filter { $0.name.localizedCaseInsensitiveContains(searchText) }
+        return items.filter { $0.name.localizedCaseInsensitiveContains(searchText) }
       }
     }
     

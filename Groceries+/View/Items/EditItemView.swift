@@ -23,6 +23,7 @@ struct EditItemView: View {
   
   @State private var editedName = ""
   @State private var selectedCategory: Category? = nil
+  @State private var recurring: Bool = true
   @State private var showEmptyError = false
   @State private var showDuplicatedError = false
   @State private var showNewCategoryView = false
@@ -39,6 +40,7 @@ struct EditItemView: View {
             .onAppear {
               editedName = item.name
               selectedCategory = item.category
+              recurring = item.recurring
             }
             .onSubmit {
               handleFormSubmission()
@@ -57,6 +59,7 @@ struct EditItemView: View {
             }
         }
         .listRowBackground(colorScheme == .dark ? Color(.systemGray5) : Color(.systemGray6))
+        
         Section(header: Text("Category")) {
           Picker("Select category", selection: $selectedCategory) {
             Text("None").tag(nil as Category?)
@@ -75,12 +78,22 @@ struct EditItemView: View {
           }
         }
         .listRowBackground(colorScheme == .dark ? Color(.systemGray5) : Color(.systemGray6))
+        
+        Section(header: Text("Recurring")) {
+          Picker("Recurring item", selection: $recurring) {
+            Text("Yes").tag(true as Bool)
+            Text("No").tag(false as Bool)
+          }
+        }
+        .listRowBackground(colorScheme == .dark ? Color(.systemGray5) : Color(.systemGray6))
+
         Section {
           Button("Save") {
             handleFormSubmission()
           }
         }
         .listRowBackground(colorScheme == .dark ? Color(.systemGray5) : Color(.systemGray6))
+        
         Section {
           Button("Delete") {
             modelContext.delete(item)
@@ -138,6 +151,7 @@ struct EditItemView: View {
         showDuplicatedError = false
         item.name = editedName
         item.category = selectedCategory
+        item.recurring = recurring
         presentationMode.wrappedValue.dismiss()
       }
     }

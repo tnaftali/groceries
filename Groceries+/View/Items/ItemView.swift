@@ -10,6 +10,8 @@ import SwiftUI
 struct ItemView: View {
   @Bindable var item: Item
   
+  @Environment(\.modelContext) private var modelContext
+
   var body: some View {
     HStack(spacing: 10) {
       Toggle(isOn: Binding(
@@ -17,6 +19,10 @@ struct ItemView: View {
         set: { newValue in
           withAnimation {
             item.checked = newValue
+            
+            if !newValue && !item.recurring {
+              modelContext.delete(item)
+            }
           }
         }
       )) {
