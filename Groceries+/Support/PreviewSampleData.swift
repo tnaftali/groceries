@@ -10,15 +10,15 @@ import SwiftData
 let previewContainer: ModelContainer = {
   do {
     let container = try ModelContainer(
-      for: Item.self,
+      for: Item.self, AppConfig.self,
       configurations: ModelConfiguration(isStoredInMemoryOnly: true)
     )
     let modelContext = container.mainContext
     if try modelContext.fetch(FetchDescriptor<Item>()).isEmpty {
-      SampleItems.items.forEach { container.mainContext.insert($0) }
+      SampleItemsWithCategories.items.forEach { container.mainContext.insert($0) }
     }
     if try modelContext.fetch(FetchDescriptor<Category>()).isEmpty {
-      SampleItems.categories.forEach { container.mainContext.insert($0) }
+      SampleItemsWithCategories.categories.forEach { container.mainContext.insert($0) }
     }
     return container
   } catch {

@@ -23,10 +23,12 @@ struct EditItemView: View {
   
   @State private var editedName = ""
   @State private var selectedCategory: Category? = nil
-  @State private var recurring: Bool = true
+  @State private var oneTime: Bool = false
+  @State private var important: Bool = false
   @State private var showEmptyError = false
   @State private var showDuplicatedError = false
   @State private var showNewCategoryView = false
+  @State private var isChecked = false
   
   private let addCategoryFlag = Category(name: "ADD_CATEGORY_FLAG")
 
@@ -40,7 +42,8 @@ struct EditItemView: View {
             .onAppear {
               editedName = item.name
               selectedCategory = item.category
-              recurring = item.recurring
+              oneTime = item.oneTime
+              important = item.important
             }
             .onSubmit {
               handleFormSubmission()
@@ -79,11 +82,16 @@ struct EditItemView: View {
         }
         .listRowBackground(colorScheme == .dark ? Color(.systemGray5) : Color(.systemGray6))
         
-        Section(header: Text("Recurring")) {
-          Picker("Recurring item", selection: $recurring) {
-            Text("Yes").tag(true as Bool)
-            Text("No").tag(false as Bool)
+        Section(header: Text("Options")) {
+          Toggle(isOn: $oneTime) {
+            Text("Delete after toggle?")
           }
+          .toggleStyle(SwitchToggleStyle(tint: .blue))
+          
+          Toggle(isOn: $important) {
+            Text("Important")
+          }
+          .toggleStyle(SwitchToggleStyle(tint: .blue))
         }
         .listRowBackground(colorScheme == .dark ? Color(.systemGray5) : Color(.systemGray6))
 
@@ -151,7 +159,8 @@ struct EditItemView: View {
         showDuplicatedError = false
         item.name = editedName
         item.category = selectedCategory
-        item.recurring = recurring
+        item.oneTime = oneTime
+        item.important = important
         presentationMode.wrappedValue.dismiss()
       }
     }

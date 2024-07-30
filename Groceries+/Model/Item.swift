@@ -15,15 +15,17 @@ final class Item {
   var checked: Bool = false
   var category: Category?
   var creationDate: Date
-  var recurring: Bool = true
+  var oneTime: Bool = false
+  var important: Bool = false
 
-  init(id: UUID = UUID(), name: String, checked: Bool = false, category: Category? = nil, creationDate: Date = .now, recurring: Bool = true) {
+  init(id: UUID = UUID(), name: String, checked: Bool = false, category: Category? = nil, creationDate: Date = .now, oneTime : Bool = false, important : Bool = false) {
     self.id = id
     self.name = name
     self.checked = checked
     self.category = category
     self.creationDate = creationDate
-    self.recurring = recurring
+    self.oneTime = oneTime
+    self.important = important
   }
 }
 

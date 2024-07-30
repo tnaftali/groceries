@@ -25,6 +25,7 @@
 		D2B1163A2B9B5DE200DB9956 /* Item.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2B116382B9B5DE200DB9956 /* Item.swift */; };
 		D2B1163B2B9B5DE200DB9956 /* SampleItems.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2B116392B9B5DE200DB9956 /* SampleItems.swift */; };
 		D2B1163D2B9B5DED00DB9956 /* PreviewSampleData.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2B1163C2B9B5DED00DB9956 /* PreviewSampleData.swift */; };
+		D2B55DB32C516838002AAB07 /* AppConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2B55DB22C516838002AAB07 /* AppConfig.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -48,6 +49,7 @@
 		D2B116382B9B5DE200DB9956 /* Item.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Item.swift; sourceTree = "<group>"; };
 		D2B116392B9B5DE200DB9956 /* SampleItems.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SampleItems.swift; sourceTree = "<group>"; };
 		D2B1163C2B9B5DED00DB9956 /* PreviewSampleData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PreviewSampleData.swift; sourceTree = "<group>"; };
+		D2B55DB22C516838002AAB07 /* AppConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppConfig.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -105,7 +107,6 @@
 				D2B1162E2B9B5D9500DB9956 /* View */,
 				D2B1162D2B9B5D9000DB9956 /* Model */,
 				D2B1161E2B9B5D4200DB9956 /* Groceries_App.swift */,
-				D2B116202B9B5D4200DB9956 /* ContentView.swift */,
 				D2B116222B9B5D4300DB9956 /* Assets.xcassets */,
 				D2B116242B9B5D4300DB9956 /* Groceries_.entitlements */,
 				D2B116252B9B5D4300DB9956 /* Preview Content */,
@@ -127,8 +128,8 @@
 			isa = PBXGroup;
 			children = (
 				D2B116382B9B5DE200DB9956 /* Item.swift */,
-				D2B116392B9B5DE200DB9956 /* SampleItems.swift */,
 				D25BB4982B9C82E7006B585B /* Category.swift */,
+				D2B55DB22C516838002AAB07 /* AppConfig.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -136,6 +137,7 @@
 		D2B1162E2B9B5D9500DB9956 /* View */ = {
 			isa = PBXGroup;
 			children = (
+				D2B116202B9B5D4200DB9956 /* ContentView.swift */,
 				D232387D2B9F8703004DA3D4 /* Categories */,
 				D232387B2B9F86C2004DA3D4 /* Items */,
 				D29EF2752C08776800EA87E7 /* PopoverStoreView.swift */,
@@ -146,6 +148,7 @@
 		D2B1162F2B9B5D9F00DB9956 /* Support */ = {
 			isa = PBXGroup;
 			children = (
+				D2B116392B9B5DE200DB9956 /* SampleItems.swift */,
 				D2B1163C2B9B5DED00DB9956 /* PreviewSampleData.swift */,
 			);
 			path = Support;
@@ -232,6 +235,7 @@
 				D2B116212B9B5D4200DB9956 /* ContentView.swift in Sources */,
 				D25BB4A02B9CCE6C006B585B /* ItemsGroupView.swift in Sources */,
 				D2B1161F2B9B5D4200DB9956 /* Groceries_App.swift in Sources */,
+				D2B55DB32C516838002AAB07 /* AppConfig.swift in Sources */,
 				D2B1163A2B9B5DE200DB9956 /* Item.swift in Sources */,
 				D2B116352B9B5DC200DB9956 /* ItemView.swift in Sources */,
 				D2B116372B9B5DC200DB9956 /* EditItemView.swift in Sources */,
@@ -388,7 +392,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 14.2;
-				MARKETING_VERSION = 1.0.3;
+				MARKETING_VERSION = 1.0.6;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.tnaftali.groceries.Groceries-";
 				PRODUCT_NAME = Groceries;
 				SDKROOT = auto;
@@ -429,7 +433,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 14.2;
-				MARKETING_VERSION = 1.0.3;
+				MARKETING_VERSION = 1.0.6;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.tnaftali.groceries.Groceries-";
 				PRODUCT_NAME = Groceries;
 				SDKROOT = auto;

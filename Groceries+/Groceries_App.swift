@@ -14,7 +14,7 @@ struct TogglesApp: App {
       
   init() {
     do {
-      modelContainer = try ModelContainer(for: Item.self)
+      modelContainer = try ModelContainer(for: Item.self, AppConfig.self)
     } catch {
       fatalError("Could not initialize ModelContainer")
     }

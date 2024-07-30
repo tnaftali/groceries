@@ -19,16 +19,18 @@ struct NewItemView: View {
   
   @State private var editedName = ""
   @State private var selectedCategory: Category? = nil
-  @State private var recurring: Bool = true
+  @State private var oneTime: Bool = false
+  @State private var important: Bool = false
   @State private var showEmptyError = false
   @State private var showDuplicatedError = false
   @State private var showNewCategoryView = false
   @State var showingPopover = false
+  
+  @Binding var returnToggle: Bool
 
   @StateObject private var store = Store()
   
   @FocusState private var isFocused: Bool
-  
   
   private let addCategoryFlag = Category(name: "ADD_CATEGORY_FLAG")
 
@@ -84,11 +86,16 @@ struct NewItemView: View {
           }
           .listRowBackground(colorScheme == .dark ? Color(.systemGray5) : Color(.systemGray6))
           
-          Section(header: Text("Recurring")) {
-            Picker("Recurring item", selection: $recurring) {
-              Text("Yes").tag(true as Bool)
-              Text("No").tag(false as Bool)
+          Section(header: Text("Options")) {
+            Toggle(isOn: $oneTime) {
+              Text("Delete after toggle?")
             }
+            .toggleStyle(SwitchToggleStyle(tint: .blue))
+            
+            Toggle(isOn: $important) {
+              Text("Important")
+            }
+            .toggleStyle(SwitchToggleStyle(tint: .blue))
           }
           .listRowBackground(colorScheme == .dark ? Color(.systemGray5) : Color(.systemGray6))
 
@@ -136,6 +143,15 @@ struct NewItemView: View {
         }
       }
     }
+    .onDisappear {
+      if presentationMode.wrappedValue.isPresented == false {
+        if returnToggle {
+          returnToggle = false
+        } else {
+          returnToggle = true
+        }
+      }
+    }
     .popover(isPresented: $showingPopover) {
       PopoverStoreView(isPresented: $showingPopover)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -166,7 +182,7 @@ struct NewItemView: View {
       } else {
         showEmptyError = false
         showDuplicatedError = false
-        let newItem = Item(name: editedName, checked: true, category: selectedCategory, recurring: recurring)
+        let newItem = Item(name: editedName, checked: true, category: selectedCategory, oneTime: oneTime, important: important)
         modelContext.insert(newItem)
         presentationMode.wrappedValue.dismiss()
       }
@@ -175,5 +191,5 @@ struct NewItemView: View {
 }
 
 #Preview {
-  NewItemView()
+  NewItemView(returnToggle: .constant(true))
 }
