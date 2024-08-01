@@ -11,7 +11,9 @@ import Foundation
 
 struct ItemsGroupView: View {
   @Query(sort: \Item.name) private var items: [Item]
+  
   var category: Category?
+  
   @Binding var searchText: String
   @Binding var toggleChecked: Bool
 

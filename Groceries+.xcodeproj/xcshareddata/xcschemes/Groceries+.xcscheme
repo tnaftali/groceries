@@ -50,6 +50,13 @@
             ReferencedContainer = "container:Groceries+.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
+      <EnvironmentVariables>
+         <EnvironmentVariable
+            key = "IDEPreferLogStreaming"
+            value = "YES"
+            isEnabled = "YES">
+         </EnvironmentVariable>
+      </EnvironmentVariables>
       <StoreKitConfigurationFileReference
          identifier = "../../Groceries+/StoreKit Config.storekit">
       </StoreKitConfigurationFileReference>

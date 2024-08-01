@@ -35,7 +35,7 @@ struct ItemListView: View {
         return items.filter { $0.name.localizedCaseInsensitiveContains(searchText) }
       }
     }
-    
+
     NavigationStack {
       VStack {
         TextField("Search", text: $searchText)
@@ -94,13 +94,13 @@ struct ItemListView: View {
           }
           Divider()
         }
-
+        
         ScrollView {
           VStack(spacing: 5) {
             ItemsGroupView(category: nil, searchText: $searchText, toggleChecked: $appConfig.checkedFilter)
-            
+
             ForEach(categories, id: \.self) { category in
-              if !isFocused || (isFocused && searchText == "") {
+              if filteredItems.contains(where: { $0.category == category }) {
                 GeometryReader { geometry in
                   ZStack(alignment: .leading) {
                     Rectangle()
@@ -123,7 +123,7 @@ struct ItemListView: View {
                 }
                 .frame(height: 30)
               }
-              
+
               ItemsGroupView(category: category, searchText: $searchText, toggleChecked: $appConfig.checkedFilter)
             }
           }
@@ -133,25 +133,39 @@ struct ItemListView: View {
       .overlay(
         ZStack {
           GeometryReader { geometry in
-            HStack {
+            HStack(alignment: .center) {
+              let pendingItemsText = filteredItems
+                .filter { $0.checked }
+                .map { "- \($0.name)" }
+                .joined(separator: "\n")
+              
+              let image = Image(uiImage: UIImage(named: "AppIcon") ?? UIImage())
+              
+              ShareLink(item: pendingItemsText, preview: SharePreview("Share Pending Groceries", image: image)) {
+                Image(systemName: "square.and.arrow.up.circle.fill")
+                  .resizable()
+                  .background(Color.white)
+                  .foregroundColor(.gray)
+                  .aspectRatio(contentMode: .fit)
+                  .frame(width: 40, height: 40)
+                  .clipShape(Circle())
+                  .shadow(radius: 6)
+              }
               Spacer()
-              VStack {
-                Button(action: {
-                  appConfig.checkedFilter.toggle()
-                }) {
-                  Image(systemName: appConfig.checkedFilter ? "checklist.unchecked" : "checklist.checked")
-                    .font(.system(size: 32))
-                    .padding(12)
-                    .padding(.horizontal, 10)
-                    .background(Color.blue)
-                    .foregroundColor(.white)
-                    .clipShape(Circle())
-                    .shadow(radius: 8)
-                    .padding(.bottom, 10)
-                }
+              Button(action: {
+                appConfig.checkedFilter.toggle()
+              }) {
+                Image(systemName: appConfig.checkedFilter ? "checklist.unchecked" : "checklist.checked")
+                  .font(.system(size: 32))
+                  .padding(12)
+                  .background(Color.blue)
+                  .foregroundColor(.white)
+                  .clipShape(Circle())
+                  .shadow(radius: 8)
               }
             }
-            .frame(width: geometry.size.width - 10, height: geometry.size.height * 2 - 60)
+            .padding(.horizontal, 15)
+            .frame(width: geometry.size.width, height: geometry.size.height * 2 - 80)
           }
         }
       )
