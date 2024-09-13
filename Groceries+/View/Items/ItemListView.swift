@@ -101,7 +101,7 @@ struct ItemListView: View {
         
         ScrollView {
           VStack(spacing: 5) {
-            ItemsGroupView(category: nil, searchText: $searchText, toggleChecked: $appConfig.checkedFilter)
+            ItemsGroupView(category: nil, searchText: $searchText, toggleChecked: .constant(appConfig.checkedFilter))
 
             ForEach(categories, id: \.self) { category in
               if filteredItems.contains(where: { $0.category == category }) {
@@ -128,7 +128,7 @@ struct ItemListView: View {
                 .frame(height: 30)
               }
 
-              ItemsGroupView(category: category, searchText: $searchText, toggleChecked: $appConfig.checkedFilter)
+              ItemsGroupView(category: category, searchText: $searchText, toggleChecked: .constant(appConfig.checkedFilter))
             }
           }
           .padding(.bottom, 80)
