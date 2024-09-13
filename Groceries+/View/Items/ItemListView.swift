@@ -10,11 +10,12 @@ import SwiftData
 import Foundation
 
 struct ItemListView: View {
+  @Environment(\.modelContext) private var modelContext
+  @Environment(\.colorScheme) var colorScheme
+  
   @Query(sort: \Item.name) private var items: [Item]
   @Query(sort: \Category.name) private var categories: [Category]
   @Query private var appConfigs: [AppConfig]
-
-  @Environment(\.colorScheme) var colorScheme
   
   @State private var searchText = ""
   @State private var showLifetimeAlert = false
@@ -25,15 +26,18 @@ struct ItemListView: View {
   
   @StateObject private var store = Store()
   
-  @Bindable var appConfig: AppConfig
-
   var body: some View {
     var filteredItems: [Item] {
+      
       if searchText.isEmpty {
         return appConfig.checkedFilter ? items.filter { $0.checked } : items
       } else {
         return items.filter { $0.name.localizedCaseInsensitiveContains(searchText) }
       }
+    }
+    
+    var appConfig: AppConfig {
+      return getAppConfig(appConfigs: appConfigs)
     }
 
     NavigationStack {
@@ -133,39 +137,37 @@ struct ItemListView: View {
       .overlay(
         ZStack {
           GeometryReader { geometry in
-            HStack(alignment: .center) {
-              let pendingItemsText = filteredItems
-                .filter { $0.checked }
-                .map { "- \($0.name)" }
-                .joined(separator: "\n")
-              
-              let image = Image(uiImage: UIImage(named: "AppIcon") ?? UIImage())
-              
-              ShareLink(item: pendingItemsText, preview: SharePreview("Share Pending Groceries", image: image)) {
-                Image(systemName: "square.and.arrow.up.circle.fill")
-                  .resizable()
-                  .background(Color.white)
-                  .foregroundColor(.gray)
-                  .aspectRatio(contentMode: .fit)
-                  .frame(width: 40, height: 40)
-                  .clipShape(Circle())
-                  .shadow(radius: 6)
+            VStack(alignment: .center) {
+              if filteredItems.filter({ $0.checked }).count > 0 {
+                Button(action: {
+                  shareCheckedItems(items: filteredItems)
+                }) {
+                  Image(systemName: "square.and.arrow.up.circle.fill")
+                    .resizable()
+                    .background(Color.white)
+                    .foregroundColor(.gray)
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: 40, height: 40)
+                    .clipShape(Circle())
+                    .shadow(radius: 6)
+                }
+              } else {
+                GeometryReader { geometry2 in }.frame(height: 40)
               }
-              Spacer()
               Button(action: {
                 appConfig.checkedFilter.toggle()
               }) {
                 Image(systemName: appConfig.checkedFilter ? "checklist.unchecked" : "checklist.checked")
-                  .font(.system(size: 32))
+                  .font(.system(size: 36))
                   .padding(12)
                   .background(Color.blue)
                   .foregroundColor(.white)
                   .clipShape(Circle())
                   .shadow(radius: 8)
               }
+              .padding(.top, 12)
             }
-            .padding(.horizontal, 15)
-            .frame(width: geometry.size.width, height: geometry.size.height * 2 - 80)
+            .frame(width: geometry.size.width * 2 - 120, height: geometry.size.height * 2 - 140)
           }
         }
       )
@@ -228,6 +230,38 @@ struct ItemListView: View {
       )
     }
   }
+  
+  private func shareCheckedItems(items: [Item]) {
+    let itemsGroupedByCategory = Dictionary(grouping: items.filter { $0.checked }, by: { $0.category })
+            
+    var pendingItemsText = ""
+    for (category, items) in itemsGroupedByCategory.sorted(by: { $0.key?.name ?? "" < $1.key?.name ?? "" }) {
+      pendingItemsText += category != nil ? "*\(category?.name ?? "")*\n" : ""
+      for item in items {
+        pendingItemsText += "- \(item.name)\n"
+      }
+      pendingItemsText += "\n"
+    }
+
+    let activityVC = UIActivityViewController(activityItems: [pendingItemsText], applicationActivities: nil)
+    
+    // Find the top-most window's root view controller
+    if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+     let rootViewController = windowScene.windows.first?.rootViewController {
+       rootViewController.present(activityVC, animated: true, completion: nil)
+    }
+  }
+  
+  private func getAppConfig(appConfigs : [AppConfig]) -> AppConfig {
+    if appConfigs == [] {
+      // Initialize AppConfig if it doesn't exist.
+      let appConfig = AppConfig(checkedFilter: false)
+      modelContext.insert(appConfig)
+      return appConfig
+    } else {
+      return appConfigs.first!
+    }
+  }
 }
 
 extension Color {
@@ -235,6 +269,6 @@ extension Color {
 }
 
 #Preview {
-  ItemListView(appConfig: AppConfig(checkedFilter: false))
+  ItemListView()
     .modelContainer(previewContainer)
 }
