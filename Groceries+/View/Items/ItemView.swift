@@ -29,32 +29,40 @@ struct ItemView: View {
       .frame(width: 50)
       
       NavigationLink(destination: EditItemView(item: item)) {
-        Text(item.name)
-          .foregroundColor(.primary)
-          .font(.system(size: 16))
-          .multilineTextAlignment(.leading)
-          .opacity(item.checked ? 1.0 : 0.5)
-          .overlay(
-            Group {
-              if item.important && item.checked {
-                Circle()
-                  .fill(Color.red)
-                  .frame(width: 5, height: 5)
-                  .offset(x: 10, y: 0)
-              } else if item.oneTime && item.checked {
-                Image(systemName: "sparkles")
-                  .font(.system(size: 10))
-                  .frame(width: 5, height: 5)
-                  .foregroundColor(.gray)
-                  .offset(x: 10, y: 0)
-              }
-            },
-            alignment: .topTrailing
-          )
+        HStack(spacing: 5) {
+          Text(item.name)
+            .foregroundColor(.primary)
+            .font(.system(size: 16))
+            .multilineTextAlignment(.leading)
+            .opacity(item.checked ? 1.0 : 0.5)
+          
+          if item.quantity > 1 {
+            Text("x\(item.quantity)")
+              .foregroundColor(.primary)
+              .font(.system(size: 14))
+              .opacity(0.5)
+          }
+        }
+        .overlay(
+          Group {
+            if item.important && item.checked {
+              Circle()
+                .fill(Color.red)
+                .frame(width: 5, height: 5)
+                .offset(x: 10, y: 0)
+            } else if item.oneTime && item.checked {
+              Image(systemName: "sparkles")
+                .font(.system(size: 10))
+                .frame(width: 5, height: 5)
+                .foregroundColor(.gray)
+                .offset(x: 10, y: 0)
+            }
+          },
+          alignment: .topTrailing
+        )
         Spacer()
       }
       .frame(height: 40)
-      
     }
     .frame(height: 40)
   }
@@ -69,5 +77,5 @@ struct ItemView: View {
 }
 
 #Preview {
-  ItemView(item: Item(name: "Test", checked: true))
+  ItemView(item: Item(name: "Test", checked: true, important: true, quantity: 3))
 }

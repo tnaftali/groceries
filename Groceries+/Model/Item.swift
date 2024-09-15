@@ -17,8 +17,9 @@ final class Item {
   var creationDate: Date
   var oneTime: Bool = false
   var important: Bool = false
+  var quantity: Int = 1
 
-  init(id: UUID = UUID(), name: String, checked: Bool = false, category: Category? = nil, creationDate: Date = .now, oneTime : Bool = false, important : Bool = false) {
+  init(id: UUID = UUID(), name: String, checked: Bool = false, category: Category? = nil, creationDate: Date = .now, oneTime : Bool = false, important : Bool = false, quantity : Int = 1) {
     self.id = id
     self.name = name
     self.checked = checked
@@ -26,6 +27,7 @@ final class Item {
     self.creationDate = creationDate
     self.oneTime = oneTime
     self.important = important
+    self.quantity = quantity
   }
 }
 

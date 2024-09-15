@@ -19,6 +19,7 @@ struct NewItemView: View {
   
   @State private var editedName = ""
   @State private var selectedCategory: Category? = nil
+  @State private var selectedQuantity: Int = 1
   @State private var oneTime: Bool = false
   @State private var important: Bool = false
   @State private var showEmptyError = false
@@ -32,8 +33,10 @@ struct NewItemView: View {
   
   @FocusState private var isFocused: Bool
   
-  private let addCategoryFlag = Category(name: "ADD_CATEGORY_FLAG")
+  let name : String?
 
+  private let addCategoryFlag = Category(name: "ADD_CATEGORY_FLAG")
+  
   var body: some View {
     var showPopover: Bool {
       return items.count > 20
@@ -48,6 +51,7 @@ struct NewItemView: View {
               .autocorrectionDisabled()
               .onAppear {
                 isFocused = true
+                editedName = name ?? ""
               }
               .onSubmit {
                 handleFormSubmission()
@@ -86,6 +90,16 @@ struct NewItemView: View {
           }
           .listRowBackground(colorScheme == .dark ? Color(.systemGray5) : Color(.systemGray6))
           
+          Section(header: Text("Quantity")) {
+            Stepper(value: $selectedQuantity, in: 1...20) {
+              Text("\(selectedQuantity)")
+            }
+            .onSubmit {
+              handleFormSubmission()
+            }
+          }
+          .listRowBackground(colorScheme == .dark ? Color(.systemGray5) : Color(.systemGray6))
+
           Section(header: Text("Options")) {
             Toggle(isOn: $oneTime) {
               Text("Delete after toggle?")
@@ -182,7 +196,7 @@ struct NewItemView: View {
       } else {
         showEmptyError = false
         showDuplicatedError = false
-        let newItem = Item(name: editedName, checked: true, category: selectedCategory, oneTime: oneTime, important: important)
+        let newItem = Item(name: editedName, checked: true, category: selectedCategory, oneTime: oneTime, important: important, quantity: selectedQuantity)
         modelContext.insert(newItem)
         presentationMode.wrappedValue.dismiss()
       }
@@ -191,5 +205,5 @@ struct NewItemView: View {
 }
 
 #Preview {
-  NewItemView(returnToggle: .constant(true))
+  NewItemView(returnToggle: .constant(true), name: "")
 }

@@ -23,6 +23,7 @@ struct EditItemView: View {
   
   @State private var editedName = ""
   @State private var selectedCategory: Category? = nil
+  @State private var selectedQuantity: Int = 1
   @State private var oneTime: Bool = false
   @State private var important: Bool = false
   @State private var showEmptyError = false
@@ -42,6 +43,7 @@ struct EditItemView: View {
             .onAppear {
               editedName = item.name
               selectedCategory = item.category
+              selectedQuantity = item.quantity
               oneTime = item.oneTime
               important = item.important
             }
@@ -82,6 +84,16 @@ struct EditItemView: View {
         }
         .listRowBackground(colorScheme == .dark ? Color(.systemGray5) : Color(.systemGray6))
         
+        Section(header: Text("Quantity")) {
+          Stepper(value: $selectedQuantity, in: 1...20) {
+            Text("\(selectedQuantity)")
+          }
+          .onSubmit {
+            handleFormSubmission()
+          }
+        }
+        .listRowBackground(colorScheme == .dark ? Color(.systemGray5) : Color(.systemGray6))
+
         Section(header: Text("Options")) {
           Toggle(isOn: $oneTime) {
             Text("Delete after toggle?")
@@ -159,6 +171,7 @@ struct EditItemView: View {
         showDuplicatedError = false
         item.name = editedName
         item.category = selectedCategory
+        item.quantity = selectedQuantity
         item.oneTime = oneTime
         item.important = important
         presentationMode.wrappedValue.dismiss()

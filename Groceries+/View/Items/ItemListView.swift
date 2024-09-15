@@ -28,7 +28,6 @@ struct ItemListView: View {
   
   var body: some View {
     var filteredItems: [Item] {
-      
       if searchText.isEmpty {
         return appConfig.checkedFilter ? items.filter { $0.checked } : items
       } else {
@@ -76,11 +75,6 @@ struct ItemListView: View {
           )
           .autocorrectionDisabled()
         
-        let noCategoryItemsCount = filteredItems.filter { $0.category == nil }.count
-        if noCategoryItemsCount > 0 {
-          Divider()
-        }
-        
         if filteredItems.count == 0 {
           Divider()
           if searchText == "" {
@@ -95,13 +89,18 @@ struct ItemListView: View {
               .foregroundColor(.primary)
               .padding(.top, 20)
               .padding(.bottom, 20)
+            
+            NavigationLink(destination: NewItemView(returnToggle: $returnToggle, name: searchText)) {
+              Text("Add \(searchText)?")
+            }
           }
           Divider()
         }
         
         ScrollView {
           VStack(spacing: 5) {
-            Group {
+            // Uncategorized items (has different behaviour)
+            if filteredItems.contains(where: { $0.category == nil }) {
               GeometryReader { geometry in
                 ZStack(alignment: .leading) {
                   Rectangle()
@@ -129,49 +128,49 @@ struct ItemListView: View {
                 }
               }
               .frame(height: 30)
-              if appConfig.uncategorizedItemsExpanded {
+              
+              if appConfig.uncategorizedItemsExpanded || searchText != "" {
                 ItemsGroupView(category: nil, searchText: $searchText, toggleChecked: .constant(appConfig.checkedFilter))
               }
             }
 
             ForEach(categories, id: \.self) { category in
               if filteredItems.contains(where: { $0.category == category }) {
-                Group {
-                  GeometryReader { geometry in
-                    ZStack(alignment: .leading) {
-                      Rectangle()
-                        .foregroundColor(colorScheme == .dark ? Color(.systemGray5) : Color(.systemGray6))
-                        .frame(width: geometry.size.width)
-                      HStack(alignment: .center) {
-                        NavigationLink(destination: EditCategoryView(category: category)) {
-                          Text(category.name)
-                            .font(.system(size: 16))
-                            .opacity(0.9)
-                            .fontWeight(.semibold)
-                            .foregroundColor(.primary)
-                            .padding(.leading, 10)
-                          Image(systemName: "square.and.pencil")
-                            .foregroundColor(.secondary)
-                            .font(.system(size: 16, weight: .semibold))
+                GeometryReader { geometry in
+                  ZStack(alignment: .leading) {
+                    Rectangle()
+                      .foregroundColor(colorScheme == .dark ? Color(.systemGray5) : Color(.systemGray6))
+                      .frame(width: geometry.size.width)
+                    HStack(alignment: .center) {
+                      NavigationLink(destination: EditCategoryView(category: category)) {
+                        Text(category.name)
+                          .font(.system(size: 16))
+                          .opacity(0.9)
+                          .fontWeight(.semibold)
+                          .foregroundColor(.primary)
+                          .padding(.leading, 10)
+                        Image(systemName: "square.and.pencil")
+                          .foregroundColor(.secondary)
+                          .font(.system(size: 16, weight: .semibold))
+                      }
+                      Button(action: {
+                        Task {
+                          await toggleCategory(category, appConfig)
                         }
-                        Button(action: {
-                          Task {
-                            await toggleCategory(category, appConfig)
-                          }
-                        }) {
-                          Spacer()
-                          Image(systemName: category.expanded ? "chevron.down" : "chevron.up")
-                            .foregroundColor(.primary)
-                            .font(.system(size: 16, weight: .semibold))
-                            .padding(.trailing, 10)
-                        }
+                      }) {
+                        Spacer()
+                        Image(systemName: category.expanded ? "chevron.down" : "chevron.up")
+                          .foregroundColor(.primary)
+                          .font(.system(size: 16, weight: .semibold))
+                          .padding(.trailing, 10)
                       }
                     }
                   }
-                  .frame(height: 30)
-                  if category.expanded {
-                    ItemsGroupView(category: category, searchText: $searchText, toggleChecked: .constant(appConfig.checkedFilter))
-                  }
+                }
+                .frame(height: 30)
+                
+                if category.expanded || searchText != "" {
+                  ItemsGroupView(category: category, searchText: $searchText, toggleChecked: .constant(appConfig.checkedFilter))
                 }
               }
             }
@@ -242,7 +241,7 @@ struct ItemListView: View {
             }
           },
         trailing: HStack(alignment: .center) {
-          NavigationLink(destination: NewItemView(returnToggle: $returnToggle)) {
+          NavigationLink(destination: NewItemView(returnToggle: $returnToggle, name: "")) {
             Text("Add item")
               .padding(.top, 15)
           }
@@ -260,7 +259,7 @@ struct ItemListView: View {
       }
     }
     .onChange(of: returnToggle) {
-      // Returned from NewItemView
+      // Returned from NewItemView event
       Task {
         await store.updatePurchases()
 
