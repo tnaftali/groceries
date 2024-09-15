@@ -52,7 +52,7 @@ struct SampleItemsWithCategories {
     Item(name: "Rice", checked: true, category: pantry),
     Item(name: "Salmon", category: meats),
     Item(name: "Steaks", category: meats),
-    Item(name: "Tomatoes", category: produce)
+    Item(name: "Tomatoes", category: produce),
   ]
 }
 

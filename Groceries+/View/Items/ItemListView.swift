@@ -101,34 +101,79 @@ struct ItemListView: View {
         
         ScrollView {
           VStack(spacing: 5) {
-            ItemsGroupView(category: nil, searchText: $searchText, toggleChecked: .constant(appConfig.checkedFilter))
-
-            ForEach(categories, id: \.self) { category in
-              if filteredItems.contains(where: { $0.category == category }) {
-                GeometryReader { geometry in
-                  ZStack(alignment: .leading) {
-                    Rectangle()
-                      .foregroundColor(colorScheme == .dark ? Color(.systemGray5) : Color(.systemGray6))
-                      .frame(width: geometry.size.width)
-                    NavigationLink(destination: EditCategoryView(category: category)) {
-                      HStack(alignment: .center) {
-                        Text(category.name)
-                          .font(.system(size: 16))
-                          .opacity(0.9)
-                          .fontWeight(.semibold)
-                          .foregroundColor(.primary)
-                          .padding(.leading, 10)
-                        Image(systemName: "chevron.right")
-                          .foregroundColor(.primary)
-                          .font(.system(size: 16, weight: .semibold))
+            Group {
+              GeometryReader { geometry in
+                ZStack(alignment: .leading) {
+                  Rectangle()
+                    .foregroundColor(colorScheme == .dark ? Color(.systemGray5) : Color(.systemGray6))
+                    .frame(width: geometry.size.width)
+                  HStack(alignment: .center) {
+                    Text("Uncategorized")
+                      .font(.system(size: 16))
+                      .opacity(0.9)
+                      .fontWeight(.semibold)
+                      .foregroundColor(.primary)
+                      .padding(.leading, 10)
+                    Button(action: {
+                      Task {
+                        await toggleCategory(nil, appConfig)
                       }
+                    }) {
+                      Spacer()
+                      Image(systemName: appConfig.uncategorizedItemsExpanded ? "chevron.down" : "chevron.up")
+                        .foregroundColor(.primary)
+                        .font(.system(size: 16, weight: .semibold))
+                        .padding(.trailing, 10)
                     }
                   }
                 }
-                .frame(height: 30)
               }
+              .frame(height: 30)
+              if appConfig.uncategorizedItemsExpanded {
+                ItemsGroupView(category: nil, searchText: $searchText, toggleChecked: .constant(appConfig.checkedFilter))
+              }
+            }
 
-              ItemsGroupView(category: category, searchText: $searchText, toggleChecked: .constant(appConfig.checkedFilter))
+            ForEach(categories, id: \.self) { category in
+              if filteredItems.contains(where: { $0.category == category }) {
+                Group {
+                  GeometryReader { geometry in
+                    ZStack(alignment: .leading) {
+                      Rectangle()
+                        .foregroundColor(colorScheme == .dark ? Color(.systemGray5) : Color(.systemGray6))
+                        .frame(width: geometry.size.width)
+                      HStack(alignment: .center) {
+                        NavigationLink(destination: EditCategoryView(category: category)) {
+                          Text(category.name)
+                            .font(.system(size: 16))
+                            .opacity(0.9)
+                            .fontWeight(.semibold)
+                            .foregroundColor(.primary)
+                            .padding(.leading, 10)
+                          Image(systemName: "square.and.pencil")
+                            .foregroundColor(.secondary)
+                            .font(.system(size: 16, weight: .semibold))
+                        }
+                        Button(action: {
+                          Task {
+                            await toggleCategory(category, appConfig)
+                          }
+                        }) {
+                          Spacer()
+                          Image(systemName: category.expanded ? "chevron.down" : "chevron.up")
+                            .foregroundColor(.primary)
+                            .font(.system(size: 16, weight: .semibold))
+                            .padding(.trailing, 10)
+                        }
+                      }
+                    }
+                  }
+                  .frame(height: 30)
+                  if category.expanded {
+                    ItemsGroupView(category: category, searchText: $searchText, toggleChecked: .constant(appConfig.checkedFilter))
+                  }
+                }
+              }
             }
           }
           .padding(.bottom, 80)
@@ -155,7 +200,9 @@ struct ItemListView: View {
                 GeometryReader { geometry2 in }.frame(height: 40)
               }
               Button(action: {
-                appConfig.checkedFilter.toggle()
+                Task {
+                  await toggleCheckedFilter(appConfig)
+                }
               }) {
                 Image(systemName: appConfig.checkedFilter ? "checklist.unchecked" : "checklist.checked")
                   .font(.system(size: 36))
@@ -261,6 +308,18 @@ struct ItemListView: View {
     } else {
       return appConfigs.first!
     }
+  }
+  
+  private func toggleCategory(_ category : Category?, _ appConfig: AppConfig) async {
+    if (category != nil) {
+      category!.expanded = !category!.expanded
+    } else {
+      appConfig.uncategorizedItemsExpanded = !appConfig.uncategorizedItemsExpanded
+    }
+  }
+  
+  private func toggleCheckedFilter(_ appConfig: AppConfig) async {
+    appConfig.checkedFilter.toggle()
   }
 }
 

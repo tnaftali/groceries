@@ -10,7 +10,7 @@ import SwiftData
 let previewContainer: ModelContainer = {
   do {
     let container = try ModelContainer(
-      for: Item.self, AppConfig.self,
+      for: Item.self, Category.self, AppConfig.self,
       configurations: ModelConfiguration(isStoredInMemoryOnly: true)
     )
     let modelContext = container.mainContext

@@ -11,9 +11,8 @@ import Foundation
 
 struct ItemsGroupView: View {
   @Query(sort: \Item.name) private var items: [Item]
-  
+
   var category: Category?
-  
   @Binding var searchText: String
   @Binding var toggleChecked: Bool
 
@@ -59,6 +58,6 @@ struct ItemsGroupView: View {
 }
 
 #Preview {
-  ItemsGroupView(category: nil, searchText: .constant(""), toggleChecked: .constant(true))
+  ItemsGroupView(category: Category(name: "Test", items: [Item(name: "Test", checked: true)], expanded: true), searchText: .constant(""), toggleChecked: .constant(true))
     .modelContainer(previewContainer)
 }

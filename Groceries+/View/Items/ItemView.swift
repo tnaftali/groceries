@@ -17,12 +17,8 @@ struct ItemView: View {
       Toggle(isOn: Binding(
         get: { item.checked },
         set: { newValue in
-          withAnimation {
-            item.checked = newValue
-            
-            if !newValue && item.oneTime {
-              modelContext.delete(item)
-            }
+          Task {
+            await updateItemChecked(newValue)
           }
         }
       )) {
@@ -61,6 +57,14 @@ struct ItemView: View {
       
     }
     .frame(height: 40)
+  }
+  
+  func updateItemChecked(_ newValue: Bool) async {
+    item.checked = newValue
+    
+    if !newValue && item.oneTime {
+      modelContext.delete(item)
+    }
   }
 }
 

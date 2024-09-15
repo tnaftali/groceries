@@ -14,12 +14,14 @@ final class Category {
   var name: String
   @Relationship(deleteRule: .nullify, inverse: \Item.category) var items: [Item]
   var creationDate: Date
-  
-  init(id: UUID = UUID(), name: String, items: [Item] = [], creationDate: Date = .now) {
+  var expanded: Bool = true
+
+  init(id: UUID = UUID(), name: String, items: [Item] = [], creationDate: Date = .now, expanded: Bool = true) {
     self.id = id
     self.name = name
     self.items = items
     self.creationDate = creationDate
+    self.expanded = expanded
   }
 }
 
