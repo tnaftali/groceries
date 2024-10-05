@@ -77,6 +77,8 @@ struct EditItemView: View {
             }.tag(Optional(addCategoryFlag))
           }
           .onChange(of: selectedCategory) {
+            isFocused = false
+            
             if selectedCategory == addCategoryFlag {
               showNewCategoryView = true
             }
@@ -88,9 +90,6 @@ struct EditItemView: View {
           Stepper(value: $selectedQuantity, in: 1...20) {
             Text("\(selectedQuantity)")
           }
-          .onSubmit {
-            handleFormSubmission()
-          }
         }
         .listRowBackground(colorScheme == .dark ? Color(.systemGray5) : Color(.systemGray6))
 
@@ -98,10 +97,16 @@ struct EditItemView: View {
           Toggle(isOn: $oneTime) {
             Text("Delete after toggle?")
           }
+          .onTapGesture {
+            isFocused = false
+          }
           .toggleStyle(SwitchToggleStyle(tint: .blue))
           
           Toggle(isOn: $important) {
             Text("Important")
+          }
+          .onTapGesture {
+            isFocused = false
           }
           .toggleStyle(SwitchToggleStyle(tint: .blue))
         }
