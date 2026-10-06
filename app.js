@@ -228,6 +228,11 @@ $("#search-form").addEventListener("submit", (e) => {
   }
 });
 
+$("#search-clear").addEventListener("click", () => {
+  clearSearch();
+  search.focus();
+});
+
 $("#add-btn").addEventListener("click", () => openItemDialog(null, search.value.trim()));
 
 function clearSearch() {
@@ -257,7 +262,8 @@ function openItemDialog(item, name = "") {
   $("#item-delete").hidden = !item;
   $("#item-error").textContent = "";
   itemDialog.showModal();
-  if (!item) f.name.focus();
+  // showModal focuses the first field, which opens the keyboard. On edit, move focus to the dialog itself.
+  (item ? itemDialog : f.name).focus();
 }
 
 itemForm.elements.category.addEventListener("change", (e) => {
