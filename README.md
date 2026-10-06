@@ -9,6 +9,12 @@
   <a href="https://tnaftali.github.io/groceries/"><strong>Open the app →</strong></a>
 </p>
 
+<p align="center">
+  <img src="screenshots/pending-light.png" width="260" alt="Pending view, light theme">
+  <img src="screenshots/all-dark.png" width="260" alt="All items, dark theme">
+  <img src="screenshots/edit-dark.png" width="260" alt="Editing an item">
+</p>
+
 ---
 
 Most list apps want an account, a subscription, or a sync server. Groceries+ wants nothing. Open the link, add it to your Home Screen, and it works like a native app: offline, instant, and with your data staying on your device.
