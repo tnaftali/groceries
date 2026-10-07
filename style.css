@@ -153,6 +153,9 @@ button.tag[aria-pressed="true"] { background: var(--c); border-color: var(--c); 
 .tag-list li { display: flex; align-items: center; justify-content: space-between; min-height: 2.25rem; }
 .tag-list .edit { color: var(--muted-foreground); }
 .tag-list .edit svg { width: 1rem; height: 1rem; }
+.tag-list .actions { display: flex; }
+.tag-list .edit:disabled { opacity: .3; }
+.tag-list .up { rotate: 180deg; }
 .tag-list .none { color: var(--muted-foreground); font-size: .875rem; }
 .dialog .swatches { display: flex; flex-direction: row; flex-wrap: wrap; gap: .5rem; }
 .swatches input { appearance: none; width: 1.75rem; height: 1.75rem; margin: 0; border-radius: 50%; background: var(--c); cursor: pointer; }

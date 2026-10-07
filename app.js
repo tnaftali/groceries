@@ -488,15 +488,34 @@ $("#category-delete").addEventListener("click", () => {
 function renderTagList() {
   const list = $("#s-tag-list");
   if (!state.tags.length) return list.replaceChildren(h("li", { class: "none" }, "No tags yet. Add one from an item."));
-  const byName = (a, b) => a.name.localeCompare(b.name);
+  // Same order as the filter bar; the arrows reorder both.
+  const btn = (attrs, name, cls) => h("button", { class: "btn edit", "data-variant": "ghost", "data-size": "icon-sm", type: "button", ...attrs }, icon(name, cls));
+  const last = state.tags.length - 1;
   list.replaceChildren(
-    ...[...state.tags].sort(byName).map((t) =>
-      h("li", {}, tagChip(t), h("button", { class: "btn edit", "data-variant": "ghost", "data-size": "icon-sm", type: "button", "data-edit-tag": t.id, "aria-label": `Edit ${t.name}` }, icon("pencil"))),
+    ...state.tags.map((t, i) =>
+      h(
+        "li",
+        {},
+        tagChip(t),
+        h(
+          "span",
+          { class: "actions" },
+          btn({ "data-move-tag": t.id, "data-delta": -1, "aria-label": `Move ${t.name} up`, disabled: i === 0 }, "chevron", "up"),
+          btn({ "data-move-tag": t.id, "data-delta": 1, "aria-label": `Move ${t.name} down`, disabled: i === last }, "chevron"),
+          btn({ "data-edit-tag": t.id, "aria-label": `Edit ${t.name}` }, "pencil"),
+        ),
+      ),
     ),
   );
 }
 
 $("#s-tag-list").addEventListener("click", (e) => {
+  const move = e.target.closest("[data-move-tag]");
+  if (move) {
+    const from = state.tags.findIndex((t) => t.id === move.dataset.moveTag);
+    update((s) => s.tags.splice(from + Number(move.dataset.delta), 0, ...s.tags.splice(from, 1)));
+    return renderTagList();
+  }
   const tag = state.tags.find((t) => t.id === e.target.closest("[data-edit-tag]")?.dataset.editTag);
   if (!tag) return;
   editingTagId = tag.id;
