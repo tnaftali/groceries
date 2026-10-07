@@ -4,18 +4,27 @@ export const emptyState = () => ({
   v: 1,
   items: [],
   categories: [],
+  tags: [],
   prefs: { showAll: false, uncategorizedOpen: true, lastExport: null, theme: "system" },
 });
 
 const norm = (s) => s.trim().toLocaleLowerCase();
 const byName = (a, b) => a.name.localeCompare(b.name, undefined, { sensitivity: "base" });
 
+// Catppuccin accents, in palette order. A tag stores the name; CSS maps it to --ctp-<name>.
+export const TAG_COLORS = ["rosewater", "flamingo", "pink", "mauve", "red", "maroon", "peach", "yellow", "green", "teal", "sky", "sapphire", "blue", "lavender"];
+
 // Empty query: the Pending/All filter applies. While searching, every item can match.
-export function visibleItems(state, query = "") {
+// A tag filter narrows either way.
+export function visibleItems(state, query = "", tagId = null) {
   const q = norm(query);
-  if (q) return state.items.filter((i) => norm(i.name).includes(q));
-  return state.prefs.showAll ? state.items : state.items.filter((i) => i.needed);
+  const items = tagId ? state.items.filter((i) => i.tagIds.includes(tagId)) : state.items;
+  if (q) return items.filter((i) => norm(i.name).includes(q));
+  return state.prefs.showAll ? items : items.filter((i) => i.needed);
 }
+
+// First color no tag uses yet, so a new tag differs from the rest until all 14 are taken.
+export const nextTagColor = (tags) => TAG_COLORS.find((c) => !tags.some((t) => t.color === c)) ?? TAG_COLORS[tags.length % TAG_COLORS.length];
 
 // Uncategorized first, then categories A→Z. Empty groups dropped. Unknown categoryId → uncategorized.
 export function groupByCategory(items, categories) {
@@ -57,5 +66,9 @@ export function parseBackup(text) {
     throw new Error("Not a Groceries+ backup");
   }
   const base = emptyState();
-  return { ...base, ...data, prefs: { ...base.prefs, ...data.prefs } };
+  // Backups from before tags have no tags list or tagIds. Unknown colors fall back to blue.
+  const tags = Array.isArray(data.tags) ? data.tags.filter(named).map((t) => ({ ...t, color: TAG_COLORS.includes(t.color) ? t.color : "blue" })) : [];
+  const tagIds = new Set(tags.map((t) => t.id));
+  const items = data.items.map((i) => ({ ...i, tagIds: Array.isArray(i.tagIds) ? i.tagIds.filter((id) => tagIds.has(id)) : [] }));
+  return { ...base, ...data, items, tags, prefs: { ...base.prefs, ...data.prefs } };
 }

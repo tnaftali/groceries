@@ -59,6 +59,7 @@
         <button type="button" data-filter="pending">Pending</button>
         <button type="button" data-filter="all">All</button>
       </div>
+      <div class="tagbar" id="tagbar" role="group" aria-label="Filter by tag" hidden></div>
     </header>
 
     <main id="list" aria-live="polite"></main>
@@ -78,6 +79,15 @@
             <label class="label" for="f-category">Category</label>
             <select class="select" id="f-category" name="category"></select>
             <input class="input" name="newCategory" placeholder="New category name" autocomplete="off" aria-label="New category name" hidden>
+          </div>
+          <div class="field">
+            <span class="label" id="f-tags-label">Tags</span>
+            <div class="chips" id="f-tags" role="group" aria-labelledby="f-tags-label"></div>
+            <div class="new-tag" id="f-new-tag" hidden>
+              <input class="input" name="newTag" placeholder="Tag name" autocomplete="off" enterkeyhint="done" aria-label="New tag name">
+              <div class="swatches" id="f-tag-colors" role="radiogroup" aria-label="Tag color"></div>
+              <button class="btn" data-variant="secondary" type="button" id="f-tag-add">Add tag</button>
+            </div>
           </div>
           <div class="field">
             <label class="label" for="f-quantity">Quantity</label>
@@ -119,6 +129,32 @@
     </div>
   </dialog>
 
+  <!-- Edit tag -->
+  <dialog class="dialog" id="tag-dialog" aria-labelledby="tag-title">
+    <div>
+      <header><h2 id="tag-title">Edit tag</h2></header>
+      <section>
+        <form class="stack" id="tag-form" novalidate>
+          <div class="field">
+            <label class="label" for="t-name">Name</label>
+            <input class="input" id="t-name" name="name" autocomplete="off" required>
+          </div>
+          <div class="field">
+            <span class="label">Color</span>
+            <div class="swatches" id="t-colors" role="radiogroup" aria-label="Tag color"></div>
+          </div>
+          <p class="error" id="tag-error" role="alert"></p>
+        </form>
+      </section>
+      <footer>
+        <button class="btn" data-variant="destructive" type="button" id="tag-delete">Delete</button>
+        <span class="spacer"></span>
+        <button class="btn" data-variant="outline" type="button" data-close>Cancel</button>
+        <button class="btn" type="submit" form="tag-form">Save</button>
+      </footer>
+    </div>
+  </dialog>
+
   <!-- Settings: backup lives here because localStorage can be wiped -->
   <dialog class="dialog" id="settings-dialog" aria-labelledby="settings-title">
     <div>
@@ -130,6 +166,7 @@
         <dl class="facts">
           <dt>Items</dt><dd id="s-items"></dd>
           <dt>Categories</dt><dd id="s-categories"></dd>
+          <dt>Tags</dt><dd id="s-tags"></dd>
           <dt>Last backup</dt><dd id="s-export"></dd>
           <dt>Storage</dt><dd id="s-storage"></dd>
         </dl>
@@ -140,6 +177,10 @@
             <button type="button" data-theme="light">Light</button>
             <button type="button" data-theme="dark">Dark</button>
           </div>
+        </div>
+        <div class="field">
+          <span class="label">Tags</span>
+          <ul class="tag-list" id="s-tag-list"></ul>
         </div>
         <button class="btn" type="button" id="export-btn">Export backup (.json)</button>
         <button class="btn" data-variant="outline" type="button" id="import-btn">Import backup…</button>

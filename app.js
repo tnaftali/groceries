@@ -1,4 +1,4 @@
-import { emptyState, visibleItems, groupByCategory, validateName, findByName, toggle, parseBackup } from "./logic.js";
+import { emptyState, visibleItems, groupByCategory, validateName, findByName, toggle, parseBackup, TAG_COLORS, nextTagColor } from "./logic.js";
 
 const KEY = "groceries.v1";
 const NEW_CATEGORY = "__new";
@@ -11,11 +11,19 @@ const itemForm = $("#item-form");
 const categoryDialog = $("#category-dialog");
 const categoryForm = $("#category-form");
 const settingsDialog = $("#settings-dialog");
+const tagbar = $("#tagbar");
+const tagDialog = $("#tag-dialog");
+const tagForm = $("#tag-form");
 
 let state = load();
 let query = "";
+let tagFilter = null; // tag id; not saved, the app opens unfiltered
 let editingItemId = null;
 let editingCategoryId = null;
+let editingTagId = null;
+// Item dialog tags: the ticked ids, and tags made in this dialog. New tags join state only on Save.
+let pickedTagIds = new Set();
+let draftTags = [];
 
 // ---------- Storage ----------
 
@@ -85,6 +93,13 @@ function icon(name, cls) {
   return svg;
 }
 
+// A colored chip. The color name maps to a palette variable, so it follows the theme.
+function tagChip(tag, tagName = "span", attrs = {}) {
+  return h(tagName, { class: "tag", style: `--c: var(--ctp-${tag.color})`, ...attrs }, tag.name);
+}
+
+const tagsOf = (item) => item.tagIds.map((id) => state.tags.find((t) => t.id === id)).filter(Boolean);
+
 function toast(message) {
   const el = h("div", { class: "toast", role: "status" }, h("div", { class: "toast-content" }, h("section", {}, h("h2", {}, message))));
   $("#toaster").append(el);
@@ -103,8 +118,12 @@ function render() {
     b.setAttribute("aria-pressed", String((b.dataset.filter === "all") === state.prefs.showAll));
   }
 
+  if (!state.tags.some((t) => t.id === tagFilter)) tagFilter = null;
+  tagbar.hidden = !state.tags.length;
+  tagbar.replaceChildren(...state.tags.map((t) => tagChip(t, "button", { type: "button", "data-tag-filter": t.id, "aria-pressed": String(t.id === tagFilter) })));
+
   const searching = query.trim() !== "";
-  const groups = groupByCategory(visibleItems(state, query), state.categories);
+  const groups = groupByCategory(visibleItems(state, query, tagFilter), state.categories);
 
   if (!groups.length) {
     list.replaceChildren(emptyView(searching));
@@ -139,7 +158,7 @@ function rowView(item) {
       "label",
       {},
       h("input", { class: "input", type: "checkbox", role: "switch", checked: item.needed, "data-toggle": item.id, "aria-label": `${item.name} on the list` }),
-      h("span", { class: "name" }, item.name),
+      h("span", { class: "name" }, item.name, tagsOf(item).map((t) => tagChip(t))),
       item.quantity > 1 && h("span", { class: "qty" }, `×${item.quantity}`),
       item.oneTime && icon("sparkles", "once"),
       item.important && h("span", { class: "important", title: "Important" }),
@@ -151,6 +170,8 @@ function rowView(item) {
 function emptyView(searching) {
   if (searching) return h("div", { class: "empty" }, h("strong", {}, "No match"), `Press Enter or + to add “${query.trim()}”.`);
   if (!state.items.length) return h("div", { class: "empty" }, h("strong", {}, "Your list is empty"), "Type an item above and press Enter.");
+  const tag = state.tags.find((t) => t.id === tagFilter);
+  if (tag) return h("div", { class: "empty" }, h("strong", {}, "Nothing here"), `No ${state.prefs.showAll ? "" : "pending "}items tagged “${tag.name}”.`);
   return h("div", { class: "empty" }, h("strong", {}, "All done"), "Nothing pending. Switch to All to see everything.");
 }
 
@@ -161,7 +182,7 @@ list.addEventListener("change", (e) => {
   if (!id) return;
   toggle(state, id);
   save();
-  if (visibleItems(state, query).some((i) => i.id === id)) {
+  if (visibleItems(state, query, tagFilter).some((i) => i.id === id)) {
     // Row stays put: patch it in place. A re-render would swap the switch mid-slide and flicker.
     const row = e.target.closest(".row");
     const group = row.closest(".group");
@@ -206,6 +227,14 @@ list.addEventListener(
 for (const b of document.querySelectorAll("[data-filter]")) {
   b.addEventListener("click", () => update((s) => (s.prefs.showAll = b.dataset.filter === "all")));
 }
+
+// Tap a tag to filter by it; tap it again to clear.
+tagbar.addEventListener("click", (e) => {
+  const id = e.target.closest("[data-tag-filter]")?.dataset.tagFilter;
+  if (!id) return;
+  tagFilter = tagFilter === id ? null : id;
+  animate(render);
+});
 
 // ---------- Search / quick add ----------
 
@@ -259,12 +288,79 @@ function openItemDialog(item, name = "") {
   f.quantity.value = item?.quantity ?? 1;
   f.oneTime.checked = item?.oneTime ?? false;
   f.important.checked = item?.important ?? false;
+  // A new item starts with the active tag filter, so it stays in view after Save.
+  pickedTagIds = new Set(item ? item.tagIds : tagFilter ? [tagFilter] : []);
+  draftTags = [];
+  closeNewTag();
+  renderDialogTags();
   $("#item-delete").hidden = !item;
   $("#item-error").textContent = "";
   itemDialog.showModal();
   // showModal focuses the first field, which opens the keyboard. On edit, move focus to the dialog itself.
   (item ? itemDialog : f.name).focus();
 }
+
+const newTagPanel = $("#f-new-tag");
+
+function renderDialogTags() {
+  $("#f-tags").replaceChildren(
+    ...[...state.tags, ...draftTags].map((t) => tagChip(t, "button", { type: "button", "data-pick-tag": t.id, "aria-pressed": String(pickedTagIds.has(t.id)) })),
+    h("button", { class: "tag add-tag", type: "button", "data-new-tag": "", "aria-expanded": String(!newTagPanel.hidden) }, "+ New tag"),
+  );
+}
+
+function openNewTag() {
+  const f = itemForm.elements;
+  f.newTag.value = "";
+  renderSwatches($("#f-tag-colors"), nextTagColor([...state.tags, ...draftTags]));
+  newTagPanel.hidden = false;
+  renderDialogTags();
+  f.newTag.focus();
+}
+
+// One radio per palette color, named tagColor within its form.
+function renderSwatches(container, selected) {
+  container.replaceChildren(
+    ...TAG_COLORS.map((c) => h("input", { type: "radio", name: "tagColor", value: c, checked: c === selected, style: `--c: var(--ctp-${c})`, "aria-label": c })),
+  );
+}
+
+function closeNewTag() {
+  newTagPanel.hidden = true;
+}
+
+function addTag() {
+  const f = itemForm.elements;
+  const all = [...state.tags, ...draftTags];
+  const name = f.newTag.value.trim();
+  if (!name) return f.newTag.focus();
+  // Typing an existing name picks that tag instead of making a duplicate.
+  let tag = findByName(all, name);
+  if (!tag) draftTags.push((tag = { id: uid(), name, color: f.tagColor.value }));
+  pickedTagIds.add(tag.id);
+  closeNewTag();
+  renderDialogTags();
+}
+
+$("#f-tags").addEventListener("click", (e) => {
+  const pick = e.target.closest("[data-pick-tag]");
+  if (pick) {
+    const id = pick.dataset.pickTag;
+    pickedTagIds.has(id) ? pickedTagIds.delete(id) : pickedTagIds.add(id);
+    pick.setAttribute("aria-pressed", String(pickedTagIds.has(id)));
+  } else if (e.target.closest("[data-new-tag]")) {
+    newTagPanel.hidden ? openNewTag() : (closeNewTag(), renderDialogTags());
+  }
+});
+
+$("#f-tag-add").addEventListener("click", addTag);
+
+// Enter in the tag name adds the tag; it must not submit the item form.
+itemForm.elements.newTag.addEventListener("keydown", (e) => {
+  if (e.key !== "Enter") return;
+  e.preventDefault();
+  addTag();
+});
 
 itemForm.elements.category.addEventListener("change", (e) => {
   const input = itemForm.elements.newCategory;
@@ -290,12 +386,14 @@ itemForm.addEventListener("submit", (e) => {
       category = findByName(s.categories, name);
       if (!category) s.categories.push((category = { id: uid(), name, open: true }));
     }
+    for (const t of draftTags) if (pickedTagIds.has(t.id)) s.tags.push(t);
     const fields = {
       name: f.name.value.trim(),
       categoryId: category?.id ?? null,
       quantity: Math.min(20, Math.max(1, Math.round(Number(f.quantity.value)) || 1)),
       oneTime: f.oneTime.checked,
       important: f.important.checked,
+      tagIds: [...pickedTagIds].filter((id) => s.tags.some((t) => t.id === id)),
     };
     if (isNew) s.items.push({ id: uid(), needed: true, createdAt: new Date().toISOString(), ...fields });
     else Object.assign(s.items.find((i) => i.id === editingItemId), fields);
@@ -343,6 +441,55 @@ $("#category-delete").addEventListener("click", () => {
   });
 });
 
+// ---------- Tag dialog (opened from Settings) ----------
+
+function renderTagList() {
+  const list = $("#s-tag-list");
+  if (!state.tags.length) return list.replaceChildren(h("li", { class: "none" }, "No tags yet. Add one from an item."));
+  const byName = (a, b) => a.name.localeCompare(b.name);
+  list.replaceChildren(
+    ...[...state.tags].sort(byName).map((t) =>
+      h("li", {}, tagChip(t), h("button", { class: "btn edit", "data-variant": "ghost", "data-size": "icon-sm", type: "button", "data-edit-tag": t.id, "aria-label": `Edit ${t.name}` }, icon("pencil"))),
+    ),
+  );
+}
+
+$("#s-tag-list").addEventListener("click", (e) => {
+  const tag = state.tags.find((t) => t.id === e.target.closest("[data-edit-tag]")?.dataset.editTag);
+  if (!tag) return;
+  editingTagId = tag.id;
+  tagForm.elements.name.value = tag.name;
+  renderSwatches($("#t-colors"), tag.color);
+  $("#tag-error").textContent = "";
+  tagDialog.showModal();
+});
+
+tagForm.addEventListener("submit", (e) => {
+  e.preventDefault();
+  const f = tagForm.elements;
+  const error = validateName(f.name.value, state.tags, editingTagId);
+  if (error) {
+    $("#tag-error").textContent = error;
+    return;
+  }
+  tagDialog.close();
+  update((s) => Object.assign(s.tags.find((t) => t.id === editingTagId), { name: f.name.value.trim(), color: f.tagColor.value }));
+  renderTagList();
+});
+
+$("#tag-delete").addEventListener("click", () => {
+  const tag = state.tags.find((t) => t.id === editingTagId);
+  if (!tag) return;
+  const used = state.items.filter((i) => i.tagIds.includes(tag.id)).length;
+  if (!confirm(`Delete “${tag.name}”?${used ? ` It's removed from ${used} item${used === 1 ? "" : "s"}.` : ""}`)) return;
+  tagDialog.close();
+  update((s) => {
+    s.tags = s.tags.filter((t) => t.id !== tag.id);
+    for (const i of s.items) i.tagIds = i.tagIds.filter((id) => id !== tag.id);
+  });
+  renderTagList();
+});
+
 // ---------- Settings ----------
 
 function renderTheme() {
@@ -361,6 +508,8 @@ $("#settings-btn").addEventListener("click", async () => {
   renderTheme();
   $("#s-items").textContent = `${state.items.filter((i) => i.needed).length} pending · ${state.items.length} total`;
   $("#s-categories").textContent = String(state.categories.length);
+  $("#s-tags").textContent = String(state.tags.length);
+  renderTagList();
   $("#s-export").textContent = state.prefs.lastExport ? new Date(state.prefs.lastExport).toLocaleString() : "Never";
   $("#s-storage").textContent = "…";
   settingsDialog.showModal();
@@ -397,7 +546,7 @@ $("#import-file").addEventListener("change", async (e) => {
 });
 
 $("#clear-btn").addEventListener("click", () => {
-  if (!confirm("Delete every item and category? Export a backup first if unsure.")) return;
+  if (!confirm("Delete every item, category and tag? Export a backup first if unsure.")) return;
   settingsDialog.close();
   update(() => (state = emptyState()));
   toast("All data cleared");
