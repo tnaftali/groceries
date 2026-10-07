@@ -45,6 +45,7 @@
     <header class="top">
       <div class="bar">
         <h1>Groceries+</h1>
+        <button class="btn" data-variant="ghost" type="button" id="edit-btn" aria-pressed="false">Edit</button>
         <button class="btn" data-variant="ghost" data-size="icon" id="settings-btn" aria-label="Settings"><svg><use href="#i-settings"/></svg></button>
       </div>
       <form class="searchbar" id="search-form" role="search">
@@ -55,11 +56,13 @@
         </div>
         <button class="btn" data-size="icon" type="button" id="add-btn" aria-label="Add item"><svg><use href="#i-plus"/></svg></button>
       </form>
-      <div class="segment" role="group" aria-label="Filter">
-        <button type="button" data-filter="pending">Pending</button>
-        <button type="button" data-filter="all">All</button>
+      <div class="filters">
+        <div class="segment" role="group" aria-label="Filter">
+          <button type="button" data-filter="pending">Pending</button>
+          <button type="button" data-filter="all">All</button>
+        </div>
+        <div class="tagbar" id="tagbar" role="group" aria-label="Filter by tag" hidden></div>
       </div>
-      <div class="tagbar" id="tagbar" role="group" aria-label="Filter by tag" hidden></div>
     </header>
 
     <main id="list" aria-live="polite"></main>
@@ -116,6 +119,10 @@
           <div class="field">
             <label class="label" for="c-name">Name</label>
             <input class="input" id="c-name" name="name" autocomplete="off" required>
+          </div>
+          <div class="field">
+            <span class="label">Color</span>
+            <div class="swatches" id="c-colors" role="radiogroup" aria-label="Category color"></div>
           </div>
           <p class="error" id="category-error" role="alert"></p>
         </form>

@@ -1,7 +1,7 @@
 // Run: node --test
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { emptyState, visibleItems, groupByCategory, validateName, toggle, parseBackup, nextTagColor, TAG_COLORS } from "./logic.js";
+import { emptyState, visibleItems, groupByCategory, validateName, toggle, parseBackup, nextColor, COLORS } from "./logic.js";
 
 const fixture = () => ({
   ...emptyState(),
@@ -69,10 +69,10 @@ test("visibleItems: tag filter narrows pending, all and search", () => {
   assert.deepEqual(visibleItems(s, "apples", "t1"), []);
 });
 
-test("nextTagColor: first unused, then cycles", () => {
-  assert.equal(nextTagColor([]), "rosewater");
-  assert.equal(nextTagColor([{ color: "rosewater" }, { color: "pink" }]), "flamingo");
-  assert.equal(nextTagColor(TAG_COLORS.map((color) => ({ color }))), "rosewater");
+test("nextColor: first unused, then cycles", () => {
+  assert.equal(nextColor([]), "rosewater");
+  assert.equal(nextColor([{ color: "rosewater" }, { color: "pink" }]), "flamingo");
+  assert.equal(nextColor(COLORS.map((color) => ({ color }))), "rosewater");
 });
 
 test("parseBackup: old backups get tags; dangling tagIds and bad colors are cleaned", () => {
@@ -82,5 +82,10 @@ test("parseBackup: old backups get tags; dangling tagIds and bad colors are clea
   const s = parseBackup(JSON.stringify({ v: 1, categories: [], tags: [{ id: "t", name: "Bulk", color: "neon" }], items: [{ id: "a", name: "Milk", tagIds: ["t", "gone"] }] }));
   assert.equal(s.tags[0].color, "blue");
   assert.deepEqual(s.items[0].tagIds, ["t"]);
+});
+
+test("parseBackup: categories without a valid color get distinct ones; valid colors kept", () => {
+  const s = parseBackup(JSON.stringify({ v: 1, items: [], categories: [{ id: "a", name: "A" }, { id: "b", name: "B", color: "teal" }, { id: "c", name: "C", color: "neon" }] }));
+  assert.deepEqual(s.categories.map((c) => c.color), ["rosewater", "teal", "flamingo"]);
 });
 

@@ -1,4 +1,4 @@
-import { emptyState, visibleItems, groupByCategory, validateName, findByName, toggle, parseBackup, TAG_COLORS, nextTagColor } from "./logic.js";
+import { emptyState, visibleItems, groupByCategory, validateName, findByName, toggle, parseBackup, COLORS, nextColor } from "./logic.js";
 
 const KEY = "groceries.v1";
 const NEW_CATEGORY = "__new";
@@ -21,6 +21,7 @@ let tagFilter = null; // tag id; not saved, the app opens unfiltered
 let editingItemId = null;
 let editingCategoryId = null;
 let editingTagId = null;
+let editMode = false; // Edit mode: a tile tap opens the editor instead of toggling
 // Item dialog tags: the ticked ids, and tags made in this dialog. New tags join state only on Save.
 let pickedTagIds = new Set();
 let draftTags = [];
@@ -135,35 +136,42 @@ function render() {
       const open = searching || (category ? category.open : state.prefs.uncategorizedOpen);
       return h(
         "details",
-        { class: category ? "group" : "group uncategorized", open, "data-category": category?.id ?? "" },
+        { class: "group", open, "data-category": category?.id ?? "", style: category && `--c: var(--ctp-${category.color})` },
         h(
           "summary",
           {},
-          h("span", { class: "title" }, category?.name ?? "Uncategorized"),
+          titleView(category?.name ?? "Uncategorized"),
           h("span", { class: "count" }, String(items.filter((i) => i.needed).length)),
           category && h("button", { class: "btn edit", "data-variant": "ghost", "data-size": "icon-sm", type: "button", "data-edit-category": category.id, "aria-label": `Edit ${category.name}` }, icon("pencil")),
           icon("chevron", "chevron"),
         ),
-        h("ul", { class: "rows" }, items.map(rowView)),
+        h("ul", { class: "tiles" }, items.map(tileView)),
       );
     }),
   );
 }
 
-function rowView(item) {
+// A leading emoji ("🥬 Produce") gets its own tinted square.
+function titleView(name) {
+  const [, emoji, rest] = name.match(/^(\p{Extended_Pictographic}\uFE0F?)\s*(.*)$/u) ?? [];
+  return h("span", { class: "title" }, emoji && h("span", { class: "emoji", "aria-hidden": "true" }, emoji), emoji ? rest : name);
+}
+
+// Order: name, quantity, important dot, one-time sparkles, tag labels. The name comes first so it scans fast.
+function tileView(item) {
   return h(
     "li",
-    { class: item.needed ? "row needed" : "row", style: `view-transition-name: i-${item.id}` },
+    {},
     h(
-      "label",
-      {},
-      h("input", { class: "input", type: "checkbox", role: "switch", checked: item.needed, "data-toggle": item.id, "aria-label": `${item.name} on the list` }),
-      h("span", { class: "name" }, item.name, tagsOf(item).map((t) => tagChip(t))),
+      "button",
+      { class: "tile", type: "button", "aria-pressed": String(item.needed), "data-item": item.id, style: `view-transition-name: i-${item.id}` },
+      h("span", { class: "name" }, item.name),
       item.quantity > 1 && h("span", { class: "qty" }, `×${item.quantity}`),
-      item.oneTime && icon("sparkles", "once"),
       item.important && h("span", { class: "important", title: "Important" }),
+      item.oneTime && icon("sparkles", "once"),
+      tagsOf(item).map((t) => tagChip(t, "span", { class: "tag mini" })),
+      icon("pencil", "pencil"),
     ),
-    h("button", { class: "btn edit", "data-variant": "ghost", "data-size": "icon-sm", type: "button", "data-edit-item": item.id, "aria-label": `Edit ${item.name}` }, icon("pencil")),
   );
 }
 
@@ -177,31 +185,64 @@ function emptyView(searching) {
 
 // ---------- List events ----------
 
-list.addEventListener("change", (e) => {
-  const id = e.target.dataset?.toggle;
-  if (!id) return;
+function toggleTile(tile) {
+  const id = tile.dataset.item;
   toggle(state, id);
   save();
-  if (visibleItems(state, query, tagFilter).some((i) => i.id === id)) {
-    // Row stays put: patch it in place. A re-render would swap the switch mid-slide and flicker.
-    const row = e.target.closest(".row");
-    const group = row.closest(".group");
-    row.classList.toggle("needed", e.target.checked);
-    group.querySelector(".count").textContent = String(group.querySelectorAll(".row.needed").length);
-  } else {
-    // Row leaves (Pending view, or a one-time item): let the switch finish sliding, then animate it out.
-    setTimeout(() => animate(render), 200);
-  }
+  const on = state.items.some((i) => i.id === id && i.needed); // a one-time item is gone once you have it
+  tile.setAttribute("aria-pressed", String(on));
+  const group = tile.closest(".group");
+  group.querySelector(".count").textContent = String(group.querySelectorAll('.tile[aria-pressed="true"]').length);
+  // Tile leaves (Pending view, or a one-time item): show the off state for a beat, then animate it out.
+  if (!visibleItems(state, query, tagFilter).some((i) => i.id === id)) setTimeout(() => animate(render), 250);
+}
+
+// Long-press (~0.45 s) a tile to edit it. Moving the finger (a scroll) cancels.
+let press = null;
+let pressed = false; // the long-press fired; swallow the click that follows
+const cancelPress = () => {
+  clearTimeout(press?.timer);
+  press = null;
+};
+
+list.addEventListener("pointerdown", (e) => {
+  const tile = e.target.closest("[data-item]");
+  pressed = false;
+  if (!tile || e.button) return;
+  press = {
+    x: e.clientX,
+    y: e.clientY,
+    timer: setTimeout(() => {
+      press = null;
+      pressed = true;
+      openItemDialog(state.items.find((i) => i.id === tile.dataset.item));
+    }, 450),
+  };
+});
+list.addEventListener("pointermove", (e) => {
+  if (press && Math.hypot(e.clientX - press.x, e.clientY - press.y) > 10) cancelPress();
+});
+for (const type of ["pointerup", "pointercancel"]) list.addEventListener(type, cancelPress);
+list.addEventListener("contextmenu", (e) => {
+  if (e.target.closest("[data-item]")) e.preventDefault();
 });
 
 list.addEventListener("click", (e) => {
-  const itemBtn = e.target.closest("[data-edit-item]");
+  const tile = e.target.closest("[data-item]");
   const catBtn = e.target.closest("[data-edit-category]");
-  if (itemBtn) openItemDialog(state.items.find((i) => i.id === itemBtn.dataset.editItem));
+  if (tile && !pressed) editMode ? openItemDialog(state.items.find((i) => i.id === tile.dataset.item)) : toggleTile(tile);
   if (catBtn) {
     e.preventDefault(); // don't also toggle the <details>
     openCategoryDialog(state.categories.find((c) => c.id === catBtn.dataset.editCategory));
   }
+  pressed = false;
+});
+
+$("#edit-btn").addEventListener("click", (e) => {
+  editMode = !editMode;
+  e.currentTarget.setAttribute("aria-pressed", String(editMode));
+  e.currentTarget.textContent = editMode ? "Done" : "Edit";
+  document.body.classList.toggle("editing", editMode);
 });
 
 // <details> toggle doesn't bubble; capture it. Persist open state, but not while search forces sections open.
@@ -312,16 +353,16 @@ function renderDialogTags() {
 function openNewTag() {
   const f = itemForm.elements;
   f.newTag.value = "";
-  renderSwatches($("#f-tag-colors"), nextTagColor([...state.tags, ...draftTags]));
+  renderSwatches($("#f-tag-colors"), nextColor([...state.tags, ...draftTags]));
   newTagPanel.hidden = false;
   renderDialogTags();
   f.newTag.focus();
 }
 
-// One radio per palette color, named tagColor within its form.
+// One radio per palette color, named color within its form.
 function renderSwatches(container, selected) {
   container.replaceChildren(
-    ...TAG_COLORS.map((c) => h("input", { type: "radio", name: "tagColor", value: c, checked: c === selected, style: `--c: var(--ctp-${c})`, "aria-label": c })),
+    ...COLORS.map((c) => h("input", { type: "radio", name: "color", value: c, checked: c === selected, style: `--c: var(--ctp-${c})`, "aria-label": c })),
   );
 }
 
@@ -336,7 +377,7 @@ function addTag() {
   if (!name) return f.newTag.focus();
   // Typing an existing name picks that tag instead of making a duplicate.
   let tag = findByName(all, name);
-  if (!tag) draftTags.push((tag = { id: uid(), name, color: f.tagColor.value }));
+  if (!tag) draftTags.push((tag = { id: uid(), name, color: f.color.value }));
   pickedTagIds.add(tag.id);
   closeNewTag();
   renderDialogTags();
@@ -384,7 +425,7 @@ itemForm.addEventListener("submit", (e) => {
       // Typing an existing name reuses that category instead of making a duplicate.
       const name = f.newCategory.value.trim();
       category = findByName(s.categories, name);
-      if (!category) s.categories.push((category = { id: uid(), name, open: true }));
+      if (!category) s.categories.push((category = { id: uid(), name, open: true, color: nextColor(s.categories) }));
     }
     for (const t of draftTags) if (pickedTagIds.has(t.id)) s.tags.push(t);
     const fields = {
@@ -415,6 +456,7 @@ function openCategoryDialog(category) {
   if (!category) return;
   editingCategoryId = category.id;
   categoryForm.elements.name.value = category.name;
+  renderSwatches($("#c-colors"), category.color);
   $("#category-error").textContent = "";
   categoryDialog.showModal();
 }
@@ -428,7 +470,7 @@ categoryForm.addEventListener("submit", (e) => {
     return;
   }
   categoryDialog.close();
-  update((s) => (s.categories.find((c) => c.id === editingCategoryId).name = name.trim()));
+  update((s) => Object.assign(s.categories.find((c) => c.id === editingCategoryId), { name: name.trim(), color: categoryForm.elements.color.value }));
 });
 
 $("#category-delete").addEventListener("click", () => {
@@ -473,7 +515,7 @@ tagForm.addEventListener("submit", (e) => {
     return;
   }
   tagDialog.close();
-  update((s) => Object.assign(s.tags.find((t) => t.id === editingTagId), { name: f.name.value.trim(), color: f.tagColor.value }));
+  update((s) => Object.assign(s.tags.find((t) => t.id === editingTagId), { name: f.name.value.trim(), color: f.color.value }));
   renderTagList();
 });
 

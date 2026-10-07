@@ -12,22 +12,24 @@
 <p align="center">
   <img src="screenshots/pending-light.png" width="260" alt="Pending view, light theme">
   <img src="screenshots/all-dark.png" width="260" alt="All items, dark theme">
-  <img src="screenshots/edit-dark.png" width="260" alt="Editing an item">
+  <img src="screenshots/edit-dark.png" width="260" alt="Editing an item, dark theme">
 </p>
 
 ---
 
 Most list apps want an account, a subscription, or a sync server. Groceries+ wants nothing. Open the link, add it to your Home Screen, and it works like a native app: offline, instant, and with your data staying on your device.
 
-Keep one list of everything you buy. Mark what you need, and the list shows only that. At the store, tap an item to take it off the list until next time.
+Keep one list of everything you buy. Each item is a toggle: on when you need it, off when you have it. The Pending view shows only what you need. At the store, tap an item to switch it off until next time.
 
 ## Features
 
 - **Search or add in one field.** Type to filter. Press Enter to add what isn't there yet.
-- **Pending and All views.** See only what you need, or your whole catalog.
-- **Categories.** Group items by aisle or store. Collapse the ones you don't need.
-- **Two-column layout.** More items on screen, less scrolling in the aisle.
-- **Quantities, important items and one-time items.** One-time items disappear once you tap them off the list.
+- **Toggle tiles.** Tap an item to switch it on or off. Tiles wrap, so a whole store fits on one screen.
+- **Pending and All views.** See only what you need, or your whole catalog. In All, off items show as dashed outlines.
+- **Edit by long-press.** Hold a tile to edit it, or tap **Edit** and then tap any tile or category.
+- **Categories.** Group items by aisle. Each category has a color. Collapse the ones you don't need.
+- **Tags.** Mark items with colored tags, such as the store you buy them at. Tap a tag to show only its items.
+- **Quantities, important items and one-time items.** A red dot marks important items. Sparkles mark one-time items, which disappear once you tap them off.
 - **Works offline.** A service worker caches the whole app.
 - **Private by design.** No account, no server, no tracking. Your list stays in your browser.
 - **Export and import.** Back up your list as JSON, or move it to another device.

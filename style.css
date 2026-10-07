@@ -67,6 +67,7 @@ svg:has(> use) { width: 1.25rem; height: 1.25rem; fill: none; stroke: currentCol
   top: 0;
   z-index: 10;
   display: grid;
+  grid-template-columns: minmax(0, 1fr); /* long tag rows scroll instead of widening the page */
   gap: .75rem;
   padding: calc(.75rem + env(safe-area-inset-top)) 0 .75rem;
   background: color-mix(in oklab, var(--background) 88%, transparent);
@@ -74,8 +75,11 @@ svg:has(> use) { width: 1.25rem; height: 1.25rem; fill: none; stroke: currentCol
   -webkit-backdrop-filter: blur(12px);
 }
 
-.bar { display: flex; align-items: center; gap: .25rem; }
-.bar h1 { flex: 1; margin: 0; font-size: 1.75rem; font-weight: 700; color: var(--ctp-blue); letter-spacing: -.02em; }
+.bar { display: flex; align-items: center; gap: .25rem; margin-bottom: .5rem; }
+.bar h1 { flex: 1; margin: 0; font: 700 1.875rem/1.1 Charter, Georgia, serif; /* built into iOS/macOS; Georgia elsewhere */ color: var(--ctp-blue); }
+#edit-btn { color: var(--ctp-blue); }
+#edit-btn[aria-pressed="true"] { font-weight: 700; }
+#settings-btn { border-radius: 50%; color: var(--ctp-blue); background: color-mix(in oklab, var(--ctp-blue) 14%, transparent); }
 
 .searchbar { display: flex; gap: .5rem; }
 .search-field { position: relative; flex: 1; }
@@ -109,6 +113,11 @@ svg:has(> use) { width: 1.25rem; height: 1.25rem; fill: none; stroke: currentCol
 }
 .segment button[aria-pressed="true"] { background: var(--background); color: var(--foreground); box-shadow: 0 1px 2px rgb(0 0 0 / .15); }
 
+/* One filter row: a compact Pending/All segment, then tag chips that scroll sideways. */
+.filters { display: flex; align-items: center; gap: .4rem; }
+.filters .segment { flex: none; padding: 2px; background: var(--ctp-crust); border-radius: .6rem; }
+.filters .segment button { padding: .3rem .75rem; font-size: .875rem; font-weight: 600; border-radius: .45rem; }
+
 /* ---------- Tags ---------- */
 /* --c is a palette color (set inline). Mixing toward the page keeps text readable in both themes. */
 
@@ -133,7 +142,7 @@ button.tag[aria-pressed="true"] { background: var(--c); border-color: var(--c); 
 .tag.add-tag { --c: var(--ctp-overlay1); border-style: dashed; background: none; }
 
 /* Filter bar: one line, swipe sideways when there are many. */
-.tagbar { display: flex; gap: .4rem; overflow-x: auto; scrollbar-width: none; }
+.tagbar { flex: 1; min-width: 0; display: flex; gap: .4rem; overflow-x: auto; scrollbar-width: none; }
 .tagbar::-webkit-scrollbar { display: none; }
 .tagbar[hidden] { display: none; }
 
@@ -151,46 +160,73 @@ button.tag[aria-pressed="true"] { background: var(--c); border-color: var(--c); 
 
 /* ---------- List ---------- */
 
-.group { border-bottom: 1px solid var(--ctp-surface0); }
+/* --c is the category color (set inline). It colors the header only; tiles stay neutral. */
+.group { --c: var(--ctp-overlay1); }
 .group > summary {
   display: flex;
   align-items: center;
   gap: .5rem;
-  min-height: 3rem;
+  min-height: 2.75rem;
   list-style: none;
-  font-weight: 600;
-  color: var(--ctp-blue);
+  font-weight: 700;
+  font-size: .9375rem;
+  color: color-mix(in oklab, var(--c) 80%, var(--foreground)); /* keeps light accents readable on Latte */
   cursor: pointer;
   user-select: none;
 }
 .group > summary::-webkit-details-marker { display: none; }
-.group > summary .title { flex: 1; }
+.group > summary .title { flex: 1; min-width: 0; display: flex; align-items: center; gap: .5rem; }
+.group > summary .emoji { display: grid; place-items: center; width: 1.6rem; height: 1.6rem; flex: none; border-radius: .45rem; font-size: .9rem; background: color-mix(in oklab, var(--c) 18%, transparent); }
 .group > summary .chevron { color: var(--muted-foreground); transition: rotate .2s ease; }
 .group[open] > summary .chevron { rotate: 180deg; }
-.group.uncategorized > summary { color: var(--muted-foreground); }
+.group .edit { display: none; color: var(--muted-foreground); }
+.group .edit svg { width: 1rem; height: 1rem; }
+.editing .group .edit { display: inline-flex; }
 
-.count {
-  min-width: 1.5rem;
-  padding: 0 .4rem;
-  border-radius: 99px;
-  background: var(--muted);
-  color: var(--muted-foreground);
-  font-size: .75rem;
-  text-align: center;
+.count { color: var(--muted-foreground); font-size: .8125rem; font-weight: 600; font-variant-numeric: tabular-nums; }
+
+/* Toggle tiles: on = filled surface, off = dashed outline (All view). They wrap, so a whole store fits on screen. */
+.tiles { list-style: none; margin: 0; padding: 0 0 .75rem; display: flex; flex-wrap: wrap; gap: .4rem; }
+.tiles li { display: contents; }
+.tile {
+  display: inline-flex;
+  align-items: center;
+  gap: .35rem;
+  max-width: 100%;
+  min-height: 2.25rem;
+  padding: .3rem .65rem;
+  border: 1px solid var(--ctp-surface0);
+  border-radius: .6rem;
+  background: var(--ctp-mantle);
+  box-shadow: 0 1px 0 var(--ctp-crust);
+  color: var(--foreground);
+  font: inherit;
+  font-size: .9375rem; /* 15px: a step below the old rows, still readable at arm's length */
+  font-weight: 600;
+  text-align: left;
+  cursor: pointer;
+  /* Long-press edits: no iOS callout or text selection. */
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+  touch-action: manipulation;
+  transition: background-color .2s, border-color .2s, color .2s, scale .12s ease;
 }
-
-.rows { list-style: none; margin: 0; padding: 0 0 .5rem; display: grid; grid-template-columns: 1fr 1fr; column-gap: .75rem; }
-
-.row { display: flex; align-items: center; gap: 0; min-width: 0; }
-.row > label { flex: 1; min-width: 0; display: flex; align-items: center; gap: .5rem; min-height: 3rem; cursor: pointer; }
-.row .name { flex: 1; overflow-wrap: break-word; hyphens: auto; transition: opacity .2s, color .2s; }
-.row .name .tag { margin-left: .35rem; }
-.row:not(.needed) .name { opacity: .55; }
-.row .qty { color: var(--muted-foreground); font-size: .875rem; font-variant-numeric: tabular-nums; }
-.row .important { width: .5rem; height: .5rem; border-radius: 50%; background: var(--ctp-red); flex: none; }
-.row .once { width: 1rem; height: 1rem; color: var(--ctp-yellow); }
-.row .edit { color: var(--muted-foreground); width: 1.75rem; flex: none; }
-.row .edit svg { width: 1rem; height: 1rem; }
+:root.dark .tile { background: var(--ctp-surface0); border-color: var(--ctp-surface1); box-shadow: none; }
+.tile[aria-pressed="false"] { background: transparent; border-style: dashed; border-color: var(--ctp-surface1); color: var(--ctp-overlay1); font-weight: 500; box-shadow: none; }
+:root.dark .tile[aria-pressed="false"] { background: transparent; border-color: var(--ctp-surface1); }
+.tile:active { scale: .95; }
+.tile .name { overflow-wrap: anywhere; }
+.tile .qty { padding: 0 .35rem; border-radius: 99px; background: var(--ctp-crust); color: var(--ctp-subtext0); font-size: .75rem; font-weight: 700; font-variant-numeric: tabular-nums; }
+:root.dark .tile .qty { background: var(--ctp-surface1); }
+.tile[aria-pressed="false"] .qty { background: none; }
+.tile .important { width: .45rem; height: .45rem; border-radius: 50%; background: var(--ctp-red); flex: none; }
+.tile .once { width: .9rem; height: .9rem; color: var(--ctp-subtext0); }
+.tile .tag.mini { padding: 0 .4rem; border: 0; font-size: .6875rem; font-weight: 700; vertical-align: 0; }
+.tile[aria-pressed="false"] :is(.important, .tag.mini) { opacity: .6; }
+.tile .pencil { display: none; width: .85rem; height: .85rem; color: var(--ctp-blue); }
+.editing .tile .pencil { display: block; }
+.editing .tile { border-color: color-mix(in oklab, var(--ctp-blue) 45%, transparent); }
 
 .empty { padding: 3rem 1rem; text-align: center; color: var(--muted-foreground); }
 .empty strong { display: block; margin-bottom: .25rem; color: var(--foreground); font-size: 1.1rem; }
@@ -218,7 +254,6 @@ button.tag[aria-pressed="true"] { background: var(--c); border-color: var(--c); 
   .app { padding-inline: 2rem; }
   .top { padding-top: 2rem; }
   .bar h1 { font-size: 2rem; }
-  .row > label { min-height: 2.5rem; }
 }
 
 /* ---------- Motion ---------- */
