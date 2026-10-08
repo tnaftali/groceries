@@ -142,7 +142,7 @@ function render() {
       const open = searching || (category ? category.open : state.prefs.uncategorizedOpen);
       return h(
         "details",
-        { class: "group", open, "data-category": category?.id ?? "", style: category && `--c: var(--ctp-${category.color})` },
+        { class: "group", open, "data-category": category?.id ?? "" },
         h(
           "summary",
           {},
@@ -468,7 +468,6 @@ function openCategoryDialog(category) {
   if (!category) return;
   editingCategoryId = category.id;
   categoryForm.elements.name.value = category.name;
-  renderSwatches($("#c-colors"), category.color);
   $("#category-error").textContent = "";
   categoryDialog.showModal();
 }
@@ -482,7 +481,7 @@ categoryForm.addEventListener("submit", (e) => {
     return;
   }
   categoryDialog.close();
-  update((s) => Object.assign(s.categories.find((c) => c.id === editingCategoryId), { name: name.trim(), color: categoryForm.elements.color.value }));
+  update((s) => Object.assign(s.categories.find((c) => c.id === editingCategoryId), { name: name.trim() }));
 });
 
 $("#category-delete").addEventListener("click", () => {
@@ -565,22 +564,16 @@ $("#tag-delete").addEventListener("click", () => {
 
 // ---------- Settings ----------
 
-// Theme (light/dark) and style (palette) are two segments over the same prefs.
-const APPEARANCE = { theme: "[data-theme]", palette: "[data-palette]" };
-
 function renderTheme() {
-  for (const [pref, sel] of Object.entries(APPEARANCE))
-    for (const b of document.querySelectorAll(sel)) b.setAttribute("aria-pressed", String(b.dataset[pref] === state.prefs[pref]));
+  for (const b of document.querySelectorAll("[data-theme]")) b.setAttribute("aria-pressed", String(b.dataset.theme === state.prefs.theme));
 }
 
-for (const [pref, sel] of Object.entries(APPEARANCE)) {
-  for (const b of document.querySelectorAll(sel)) {
-    b.addEventListener("click", () => {
-      state.prefs[pref] = b.dataset[pref];
-      save();
-      renderTheme();
-    });
-  }
+for (const b of document.querySelectorAll("[data-theme]")) {
+  b.addEventListener("click", () => {
+    state.prefs.theme = b.dataset.theme;
+    save();
+    renderTheme();
+  });
 }
 
 $("#settings-btn").addEventListener("click", async () => {

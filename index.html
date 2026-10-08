@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Groceries+</title>
-  <meta name="theme-color" content="#eff1f5">
+  <meta name="theme-color" content="#ffffff">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="Groceries+">
@@ -14,7 +14,7 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/basecoat-css@1.0.2/dist/basecoat.cdn.min.css">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500&text=Groceries%2B&display=swap" crossorigin>
   <link rel="stylesheet" href="style.css">
-  <!-- html.dark picks Macchiato (and Basecoat's dark tweaks). Runs before paint so there's no flash. -->
+  <!-- html.dark picks the dark grays (and Basecoat's dark tweaks). Runs before paint so there's no flash. -->
   <script>
     const scheme = matchMedia("(prefers-color-scheme: dark)");
     // Global so app.js can re-apply after the theme setting changes.
@@ -22,14 +22,12 @@
       let prefs = {};
       try { prefs = JSON.parse(localStorage.getItem("groceries.v1"))?.prefs ?? {}; } catch {}
       const theme = prefs.theme ?? "system";
-      const neutral = prefs.palette === "neutral";
       const dark = theme === "dark" || (theme === "system" && scheme.matches);
       document.documentElement.classList.toggle("dark", dark);
-      document.documentElement.classList.toggle("neutral", neutral);
       // iOS standalone ignores content changes on the old tag; a fresh element makes it repaint the status bar.
       const meta = document.createElement("meta");
       meta.name = "theme-color";
-      meta.content = neutral ? (dark ? "#131314" : "#ffffff") : dark ? "#24273a" : "#eff1f5";
+      meta.content = dark ? "#131314" : "#ffffff";
       document.querySelector('meta[name="theme-color"]').replaceWith(meta);
     }
     applyScheme();
@@ -128,10 +126,6 @@
             <label class="label" for="c-name">Name</label>
             <input class="input" id="c-name" name="name" autocomplete="off" required>
           </div>
-          <div class="field">
-            <span class="label">Color</span>
-            <div class="swatches" id="c-colors" role="radiogroup" aria-label="Category color"></div>
-          </div>
           <p class="error" id="category-error" role="alert"></p>
         </form>
       </section>
@@ -191,13 +185,6 @@
             <button type="button" data-theme="system">Auto</button>
             <button type="button" data-theme="light">Light</button>
             <button type="button" data-theme="dark">Dark</button>
-          </div>
-        </div>
-        <div class="field">
-          <span class="label">Style</span>
-          <div class="segment" role="group" aria-label="Style">
-            <button type="button" data-palette="catppuccin">Catppuccin</button>
-            <button type="button" data-palette="neutral">Neutral</button>
           </div>
         </div>
         <div class="field">

@@ -5,14 +5,15 @@ export const emptyState = () => ({
   items: [],
   categories: [],
   tags: [],
-  prefs: { showAll: false, uncategorizedOpen: true, lastExport: null, theme: "system", palette: "catppuccin", categoriesOrdered: true },
+  prefs: { showAll: false, uncategorizedOpen: true, lastExport: null, theme: "system", categoriesOrdered: true },
 });
 
 // Case- and accent-insensitive: "atun" matches "Atún".
 const norm = (s) => s.trim().toLocaleLowerCase().normalize("NFD").replace(/\p{Diacritic}/gu, "");
 const byName = (a, b) => a.name.localeCompare(b.name, undefined, { sensitivity: "base" });
 
-// Catppuccin accents, in palette order. Tags and categories store the name; CSS maps it to --ctp-<name>.
+// Catppuccin accent hues, in palette order. Tags store the name; CSS maps it to --ctp-<name>.
+// Categories still carry a color (kept in backups), but nothing shows it.
 export const COLORS = ["rosewater", "flamingo", "pink", "mauve", "red", "maroon", "peach", "yellow", "green", "teal", "sky", "sapphire", "blue", "lavender"];
 
 // Empty query: the Pending/All filter applies. While searching, every item can match.

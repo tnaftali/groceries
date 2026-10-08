@@ -1,36 +1,23 @@
-/* ---------- Palette: Catppuccin v1.8.0 ---------- */
+/* ---------- Palette ---------- */
 
-/* Latte (light) */
+/* Grays: shadcn neutral (light) and Material 3 (dark, as in Gmail). Accents: Catppuccin hues, used only by tag colors.
+   html.dark is set in index.html from the Settings theme or the system. */
 :root {
+  color-scheme: light;
   --ctp-rosewater: #dc8a78; --ctp-flamingo: #dd7878; --ctp-pink: #ea76cb; --ctp-mauve: #8839ef;
   --ctp-red: #d20f39; --ctp-maroon: #e64553; --ctp-peach: #fe640b; --ctp-yellow: #df8e1d;
   --ctp-green: #40a02b; --ctp-teal: #179299; --ctp-sky: #04a5e5; --ctp-sapphire: #209fb5;
-  --ctp-blue: #1e66f5; --ctp-lavender: #7287fd; --ctp-text: #4c4f69; --ctp-subtext1: #5c5f77;
-  --ctp-subtext0: #6c6f85; --ctp-overlay2: #7c7f93; --ctp-overlay1: #8c8fa1; --ctp-overlay0: #9ca0b0;
-  --ctp-surface2: #acb0be; --ctp-surface1: #bcc0cc; --ctp-surface0: #ccd0da;
-  --ctp-base: #eff1f5; --ctp-mantle: #e6e9ef; --ctp-crust: #dce0e8;
-  color-scheme: light;
+  --ctp-blue: #1e66f5; --ctp-lavender: #7287fd;
+  --ctp-text: #0a0a0a; --ctp-subtext1: #404040; --ctp-subtext0: #737373; --ctp-overlay2: #737373;
+  --ctp-overlay1: #a3a3a3; --ctp-overlay0: #a3a3a3; --ctp-surface2: #a3a3a3; --ctp-surface1: #d4d4d4;
+  --ctp-surface0: #e5e5e5; --ctp-base: #ffffff; --ctp-mantle: #ffffff; --ctp-crust: #f5f5f5;
 }
-
-/* Macchiato (dark). html.dark is set in index.html from the Settings theme or the system. */
 :root.dark {
   color-scheme: dark;
   --ctp-rosewater: #f4dbd6; --ctp-flamingo: #f0c6c6; --ctp-pink: #f5bde6; --ctp-mauve: #c6a0f6;
   --ctp-red: #ed8796; --ctp-maroon: #ee99a0; --ctp-peach: #f5a97f; --ctp-yellow: #eed49f;
   --ctp-green: #a6da95; --ctp-teal: #8bd5ca; --ctp-sky: #91d7e3; --ctp-sapphire: #7dc4e4;
-  --ctp-blue: #8aadf4; --ctp-lavender: #b7bdf8; --ctp-text: #cad3f5; --ctp-subtext1: #b8c0e0;
-  --ctp-subtext0: #a5adcb; --ctp-overlay2: #939ab7; --ctp-overlay1: #8087a2; --ctp-overlay0: #6e738d;
-  --ctp-surface2: #5b6078; --ctp-surface1: #494d64; --ctp-surface0: #363a4f;
-  --ctp-base: #24273a; --ctp-mantle: #1e2030; --ctp-crust: #181926;
-}
-
-/* Neutral style: shadcn's default black/white. Remaps the Catppuccin grays (accents stay for tags). */
-:root.neutral {
-  --ctp-text: #0a0a0a; --ctp-subtext1: #404040; --ctp-subtext0: #737373; --ctp-overlay2: #737373;
-  --ctp-overlay1: #a3a3a3; --ctp-overlay0: #a3a3a3; --ctp-surface2: #a3a3a3; --ctp-surface1: #d4d4d4;
-  --ctp-surface0: #e5e5e5; --ctp-base: #ffffff; --ctp-mantle: #ffffff; --ctp-crust: #f5f5f5;
-}
-:root.neutral.dark { /* softer than pure black: Google's Material 3 dark grays (as in Gmail) */
+  --ctp-blue: #8aadf4; --ctp-lavender: #b7bdf8;
   --ctp-text: #e3e3e3; --ctp-subtext1: #c4c7c5; --ctp-subtext0: #a8aba9; --ctp-overlay2: #a8aba9;
   --ctp-overlay1: #8e918f; --ctp-overlay0: #5e6160; --ctp-surface2: #5e6160; --ctp-surface1: #444746;
   --ctp-surface0: #282a2c; --ctp-base: #131314; --ctp-mantle: #1e1f20; --ctp-crust: #1e1f20;
@@ -41,20 +28,16 @@
   --background: var(--ctp-base);     --foreground: var(--ctp-text);
   --card: var(--ctp-mantle);         --card-foreground: var(--ctp-text);
   --popover: var(--ctp-mantle);      --popover-foreground: var(--ctp-text);
-  --primary: var(--ctp-blue);        --primary-foreground: var(--ctp-base);
   --secondary: var(--ctp-surface0);  --secondary-foreground: var(--ctp-text);
   --muted: var(--ctp-surface0);      --muted-foreground: var(--ctp-subtext0);
   --accent: var(--ctp-surface0);     --accent-foreground: var(--ctp-text);
   --destructive: var(--ctp-red);
-  --border: var(--ctp-surface1);     --input: var(--ctp-surface1);   --ring: var(--ctp-lavender);
   --radius: .75rem;
-  --ink: var(--ctp-blue); /* title and edit accents */
   interpolate-size: allow-keywords; /* lets <details> animate to height: auto */
 }
-
-/* Neutral uses shadcn's own primary, borders and ring instead of the remapped grays. */
-:root.neutral { --primary: #171717; --primary-foreground: #fafafa; --border: #e5e5e5; --input: #e5e5e5; --ring: #a3a3a3; --ink: var(--foreground); }
-:root.neutral.dark { --primary: #e3e3e3; --primary-foreground: #131314; --border: #ffffff1a; --input: #ffffff26; --ring: #737373; }
+/* Google blue accent (title, buttons, edit accents): light #0b57d0, dark #a8c7fa. */
+:root { --primary: #0b57d0; --primary-foreground: #ffffff; --border: #e5e5e5; --input: #e5e5e5; --ring: #0b57d0; --ink: #0b57d0; }
+:root.dark { --primary: #a8c7fa; --primary-foreground: #062e6f; --border: #ffffff1a; --input: #ffffff26; --ring: #a8c7fa; --ink: #a8c7fa; }
 
 /* ---------- Base (mobile first) ---------- */
 
@@ -180,8 +163,6 @@ button.tag[aria-pressed="true"] { background: var(--c); border-color: var(--c); 
 
 /* ---------- List ---------- */
 
-/* --c is the category color (set inline). It tints the emoji badge only; titles stay plain. */
-.group { --c: var(--ctp-overlay1); }
 .group + .group { border-top: 1px solid color-mix(in oklab, var(--border) 70%, transparent); padding-top: .25rem; }
 .group > summary {
   display: flex;
@@ -189,15 +170,15 @@ button.tag[aria-pressed="true"] { background: var(--c); border-color: var(--c); 
   gap: .5rem;
   min-height: 2.75rem;
   list-style: none;
-  font-weight: 600;
-  font-size: 1rem; /* a small step above the 15px tiles; the divider does the separating */
-  color: var(--foreground);
+  font-weight: 500;
+  font-size: .9375rem; /* same size as tiles; muted color keeps headers quiet, the divider does the separating */
+  color: var(--muted-foreground);
   cursor: pointer;
   user-select: none;
 }
 .group > summary::-webkit-details-marker { display: none; }
 .group > summary .title { flex: 1; min-width: 0; display: flex; align-items: center; gap: .5rem; }
-.group > summary .emoji { display: grid; place-items: center; width: 1.6rem; height: 1.6rem; flex: none; border-radius: .45rem; font-size: .9rem; background: color-mix(in oklab, var(--c) 18%, transparent); }
+.group > summary .emoji { display: grid; place-items: center; width: 1.6rem; height: 1.6rem; flex: none; border-radius: .45rem; font-size: .9rem; background: color-mix(in oklab, var(--foreground) 8%, transparent); }
 .group > summary .chevron { color: var(--muted-foreground); transition: rotate .2s ease; }
 .group[open] > summary .chevron { rotate: 180deg; }
 .group .edit { display: none; color: var(--muted-foreground); }
@@ -235,7 +216,7 @@ button.tag[aria-pressed="true"] { background: var(--c); border-color: var(--c); 
   touch-action: manipulation;
   transition: background-color .2s, border-color .2s, color .2s, scale .12s ease;
 }
-:root.dark .tile { background: var(--ctp-surface0); border-color: var(--ctp-surface1); box-shadow: none; }
+:root.dark .tile { background: var(--ctp-mantle); border-color: var(--ctp-surface1); box-shadow: none; }
 .tile[aria-pressed="false"] { background: transparent; border-style: dashed; border-color: var(--ctp-surface1); color: var(--ctp-overlay1); box-shadow: none; }
 :root.dark .tile[aria-pressed="false"] { background: transparent; border-color: var(--ctp-surface1); }
 .tile:active { scale: .95; }
