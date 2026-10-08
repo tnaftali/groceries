@@ -30,10 +30,10 @@
   --ctp-overlay1: #a3a3a3; --ctp-overlay0: #a3a3a3; --ctp-surface2: #a3a3a3; --ctp-surface1: #d4d4d4;
   --ctp-surface0: #e5e5e5; --ctp-base: #ffffff; --ctp-mantle: #ffffff; --ctp-crust: #f5f5f5;
 }
-:root.neutral.dark {
-  --ctp-text: #fafafa; --ctp-subtext1: #d4d4d4; --ctp-subtext0: #a1a1a1; --ctp-overlay2: #a3a3a3;
-  --ctp-overlay1: #737373; --ctp-overlay0: #525252; --ctp-surface2: #525252; --ctp-surface1: #404040;
-  --ctp-surface0: #262626; --ctp-base: #0a0a0a; --ctp-mantle: #171717; --ctp-crust: #171717;
+:root.neutral.dark { /* softer than pure black: Google's Material 3 dark grays (as in Gmail) */
+  --ctp-text: #e3e3e3; --ctp-subtext1: #c4c7c5; --ctp-subtext0: #a8aba9; --ctp-overlay2: #a8aba9;
+  --ctp-overlay1: #8e918f; --ctp-overlay0: #5e6160; --ctp-surface2: #5e6160; --ctp-surface1: #444746;
+  --ctp-surface0: #282a2c; --ctp-base: #131314; --ctp-mantle: #1e1f20; --ctp-crust: #1e1f20;
 }
 
 /* shadcn/Basecoat tokens, mapped once. :root.dark beats Basecoat's own .dark block. */
@@ -54,7 +54,7 @@
 
 /* Neutral uses shadcn's own primary, borders and ring instead of the remapped grays. */
 :root.neutral { --primary: #171717; --primary-foreground: #fafafa; --border: #e5e5e5; --input: #e5e5e5; --ring: #a3a3a3; --ink: var(--foreground); }
-:root.neutral.dark { --primary: #e5e5e5; --primary-foreground: #171717; --border: #ffffff1a; --input: #ffffff26; --ring: #737373; }
+:root.neutral.dark { --primary: #e3e3e3; --primary-foreground: #131314; --border: #ffffff1a; --input: #ffffff26; --ring: #737373; }
 
 /* ---------- Base (mobile first) ---------- */
 

@@ -26,7 +26,11 @@
       const dark = theme === "dark" || (theme === "system" && scheme.matches);
       document.documentElement.classList.toggle("dark", dark);
       document.documentElement.classList.toggle("neutral", neutral);
-      document.querySelector('meta[name="theme-color"]').content = neutral ? (dark ? "#0a0a0a" : "#ffffff") : dark ? "#24273a" : "#eff1f5";
+      // iOS standalone ignores content changes on the old tag; a fresh element makes it repaint the status bar.
+      const meta = document.createElement("meta");
+      meta.name = "theme-color";
+      meta.content = neutral ? (dark ? "#131314" : "#ffffff") : dark ? "#24273a" : "#eff1f5";
+      document.querySelector('meta[name="theme-color"]').replaceWith(meta);
     }
     applyScheme();
     scheme.addEventListener("change", applyScheme);
