@@ -10,9 +10,9 @@
 </p>
 
 <p align="center">
-  <img src="screenshots/pending-light.png" width="260" alt="Pending view, Catppuccin light">
-  <img src="screenshots/all-dark.png" width="260" alt="All items, Neutral dark">
-  <img src="screenshots/edit-dark.png" width="260" alt="Edit mode, Catppuccin dark">
+  <img src="screenshots/pending-catppuccin-light.png" width="260" alt="Pending view, Catppuccin light">
+  <img src="screenshots/all-neutral-dark.png" width="260" alt="All items, Neutral dark">
+  <img src="screenshots/edit-mode-catppuccin-dark.png" width="260" alt="Edit mode, Catppuccin dark">
 </p>
 
 ---
