@@ -24,6 +24,18 @@
   --ctp-base: #24273a; --ctp-mantle: #1e2030; --ctp-crust: #181926;
 }
 
+/* Neutral style: shadcn's default black/white. Remaps the Catppuccin grays (accents stay for tags). */
+:root.neutral {
+  --ctp-text: #0a0a0a; --ctp-subtext1: #404040; --ctp-subtext0: #737373; --ctp-overlay2: #737373;
+  --ctp-overlay1: #a3a3a3; --ctp-overlay0: #a3a3a3; --ctp-surface2: #a3a3a3; --ctp-surface1: #d4d4d4;
+  --ctp-surface0: #e5e5e5; --ctp-base: #ffffff; --ctp-mantle: #ffffff; --ctp-crust: #f5f5f5;
+}
+:root.neutral.dark {
+  --ctp-text: #fafafa; --ctp-subtext1: #d4d4d4; --ctp-subtext0: #a1a1a1; --ctp-overlay2: #a3a3a3;
+  --ctp-overlay1: #737373; --ctp-overlay0: #525252; --ctp-surface2: #525252; --ctp-surface1: #404040;
+  --ctp-surface0: #262626; --ctp-base: #0a0a0a; --ctp-mantle: #171717; --ctp-crust: #171717;
+}
+
 /* shadcn/Basecoat tokens, mapped once. :root.dark beats Basecoat's own .dark block. */
 :root, :root.dark {
   --background: var(--ctp-base);     --foreground: var(--ctp-text);
@@ -36,8 +48,13 @@
   --destructive: var(--ctp-red);
   --border: var(--ctp-surface1);     --input: var(--ctp-surface1);   --ring: var(--ctp-lavender);
   --radius: .75rem;
+  --ink: var(--ctp-blue); /* title and edit accents */
   interpolate-size: allow-keywords; /* lets <details> animate to height: auto */
 }
+
+/* Neutral uses shadcn's own primary, borders and ring instead of the remapped grays. */
+:root.neutral { --primary: #171717; --primary-foreground: #fafafa; --border: #e5e5e5; --input: #e5e5e5; --ring: #a3a3a3; --ink: var(--foreground); }
+:root.neutral.dark { --primary: #e5e5e5; --primary-foreground: #171717; --border: #ffffff1a; --input: #ffffff26; --ring: #737373; }
 
 /* ---------- Base (mobile first) ---------- */
 
@@ -76,10 +93,10 @@ svg:has(> use) { width: 1.25rem; height: 1.25rem; fill: none; stroke: currentCol
 }
 
 .bar { display: flex; align-items: center; gap: .25rem; margin-bottom: .5rem; }
-.bar h1 { flex: 1; margin: 0; font: 700 1.875rem/1.1 Charter, Georgia, serif; /* built into iOS/macOS; Georgia elsewhere */ color: var(--ctp-blue); }
-#edit-btn { color: var(--ctp-blue); }
+.bar h1 { flex: 1; margin: 0; font: 500 2rem/1.1 "Bricolage Grotesque", system-ui, sans-serif; letter-spacing: -.01em; color: var(--ink); }
+#edit-btn { color: var(--ink); }
 #edit-btn[aria-pressed="true"] { font-weight: 700; }
-#settings-btn { border-radius: 50%; color: var(--ctp-blue); background: color-mix(in oklab, var(--ctp-blue) 14%, transparent); }
+#settings-btn { border-radius: 50%; color: var(--ink); background: color-mix(in oklab, var(--ink) 14%, transparent); }
 
 .searchbar { display: flex; gap: .5rem; }
 .search-field { position: relative; flex: 1; }
@@ -163,17 +180,18 @@ button.tag[aria-pressed="true"] { background: var(--c); border-color: var(--c); 
 
 /* ---------- List ---------- */
 
-/* --c is the category color (set inline). It colors the header only; tiles stay neutral. */
+/* --c is the category color (set inline). It tints the emoji badge only; titles stay plain. */
 .group { --c: var(--ctp-overlay1); }
+.group + .group { border-top: 1px solid color-mix(in oklab, var(--border) 70%, transparent); padding-top: .25rem; }
 .group > summary {
   display: flex;
   align-items: center;
   gap: .5rem;
   min-height: 2.75rem;
   list-style: none;
-  font-weight: 700;
-  font-size: .9375rem;
-  color: color-mix(in oklab, var(--c) 80%, var(--foreground)); /* keeps light accents readable on Latte */
+  font-weight: 600;
+  font-size: 1rem; /* a small step above the 15px tiles; the divider does the separating */
+  color: var(--foreground);
   cursor: pointer;
   user-select: none;
 }
@@ -204,8 +222,8 @@ button.tag[aria-pressed="true"] { background: var(--c); border-color: var(--c); 
   box-shadow: 0 1px 0 var(--ctp-crust);
   color: var(--foreground);
   font: inherit;
-  font-size: .9375rem; /* 15px: a step below the old rows, still readable at arm's length */
-  font-weight: 600;
+  font-size: .9375rem; /* 15px: a step below the category headers, still readable at arm's length */
+  font-weight: 500; /* same weight on and off, so a toggle never reflows the row */
   text-align: left;
   cursor: pointer;
   /* Long-press edits: no iOS callout or text selection. */
@@ -216,7 +234,7 @@ button.tag[aria-pressed="true"] { background: var(--c); border-color: var(--c); 
   transition: background-color .2s, border-color .2s, color .2s, scale .12s ease;
 }
 :root.dark .tile { background: var(--ctp-surface0); border-color: var(--ctp-surface1); box-shadow: none; }
-.tile[aria-pressed="false"] { background: transparent; border-style: dashed; border-color: var(--ctp-surface1); color: var(--ctp-overlay1); font-weight: 500; box-shadow: none; }
+.tile[aria-pressed="false"] { background: transparent; border-style: dashed; border-color: var(--ctp-surface1); color: var(--ctp-overlay1); box-shadow: none; }
 :root.dark .tile[aria-pressed="false"] { background: transparent; border-color: var(--ctp-surface1); }
 .tile:active { scale: .95; }
 .tile .name { overflow-wrap: anywhere; }
@@ -227,9 +245,9 @@ button.tag[aria-pressed="true"] { background: var(--c); border-color: var(--c); 
 .tile .once { width: .9rem; height: .9rem; color: var(--ctp-subtext0); }
 .tile .tag.mini { padding: 0 .4rem; border: 0; font-size: .6875rem; font-weight: 700; vertical-align: 0; }
 .tile[aria-pressed="false"] :is(.important, .tag.mini) { opacity: .6; }
-.tile .pencil { display: none; width: .85rem; height: .85rem; color: var(--ctp-blue); }
+.tile .pencil { display: none; width: .85rem; height: .85rem; color: var(--ink); }
 .editing .tile .pencil { display: block; }
-.editing .tile { border-color: color-mix(in oklab, var(--ctp-blue) 45%, transparent); }
+.editing .tile { border-color: color-mix(in oklab, var(--ink) 45%, transparent); }
 
 .empty { padding: 3rem 1rem; text-align: center; color: var(--muted-foreground); }
 .empty strong { display: block; margin-bottom: .25rem; color: var(--foreground); font-size: 1.1rem; }

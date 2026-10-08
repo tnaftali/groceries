@@ -553,16 +553,22 @@ $("#tag-delete").addEventListener("click", () => {
 
 // ---------- Settings ----------
 
+// Theme (light/dark) and style (palette) are two segments over the same prefs.
+const APPEARANCE = { theme: "[data-theme]", palette: "[data-palette]" };
+
 function renderTheme() {
-  for (const b of document.querySelectorAll("[data-theme]")) b.setAttribute("aria-pressed", String(b.dataset.theme === state.prefs.theme));
+  for (const [pref, sel] of Object.entries(APPEARANCE))
+    for (const b of document.querySelectorAll(sel)) b.setAttribute("aria-pressed", String(b.dataset[pref] === state.prefs[pref]));
 }
 
-for (const b of document.querySelectorAll("[data-theme]")) {
-  b.addEventListener("click", () => {
-    state.prefs.theme = b.dataset.theme;
-    save();
-    renderTheme();
-  });
+for (const [pref, sel] of Object.entries(APPEARANCE)) {
+  for (const b of document.querySelectorAll(sel)) {
+    b.addEventListener("click", () => {
+      state.prefs[pref] = b.dataset[pref];
+      save();
+      renderTheme();
+    });
+  }
 }
 
 $("#settings-btn").addEventListener("click", async () => {

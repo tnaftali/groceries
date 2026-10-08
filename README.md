@@ -23,7 +23,7 @@ Keep one list of everything you buy. Each item is a toggle: on when you need it,
 
 ## Features
 
-- **Search or add in one field.** Type to filter. Press Enter to add what isn't there yet.
+- **Search or add in one field.** Type to filter; case and accents are ignored, so "atun" finds "Atún". Press Enter to add what isn't there yet.
 - **Toggle tiles.** Tap an item to switch it on or off. Tiles wrap, so a whole store fits on one screen.
 - **Pending and All views.** See only what you need, or your whole catalog. In All, off items show as dashed outlines.
 - **Edit by long-press.** Hold a tile to edit it, or tap **Edit** and then tap any tile or category.
@@ -33,7 +33,7 @@ Keep one list of everything you buy. Each item is a toggle: on when you need it,
 - **Works offline.** A service worker caches the whole app.
 - **Private by design.** No account, no server, no tracking. Your list stays in your browser.
 - **Export and import.** Back up your list as JSON, or move it to another device.
-- **Light and dark themes.** Catppuccin Latte and Macchiato. Follows your system, or pick one in Settings.
+- **Light and dark themes, two styles.** Catppuccin (Latte and Macchiato) or a plain black-and-white Neutral style. Follows your system, or pick in Settings.
 
 ## Install on iPhone
 
@@ -57,5 +57,6 @@ GitHub Pages deploys `main` as-is. After changing app files, bump `VERSION` in `
 
 - UI components: [Basecoat](https://basecoatui.com)
 - Colors: [Catppuccin](https://catppuccin.com)
+- Title font: [Bricolage Grotesque](https://fonts.google.com/specimen/Bricolage+Grotesque)
 - Icons: [Lucide](https://lucide.dev)
 - Cart icon: BUSAIRI, from the Noun Project

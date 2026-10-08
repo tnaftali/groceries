@@ -89,3 +89,9 @@ test("parseBackup: categories without a valid color get distinct ones; valid col
   assert.deepEqual(s.categories.map((c) => c.color), ["rosewater", "teal", "flamingo"]);
 });
 
+
+test("visibleItems: search ignores accents both ways", () => {
+  const s = { ...emptyState(), items: [{ id: "a", name: "Atún", needed: true, tagIds: [] }, { id: "b", name: "Pan", needed: true, tagIds: [] }] };
+  assert.deepEqual(visibleItems(s, "atun").map((i) => i.id), ["a"]);
+  assert.deepEqual(visibleItems(s, "ATÚN").map((i) => i.id), ["a"]);
+});
