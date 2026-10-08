@@ -1,4 +1,4 @@
-import { emptyState, visibleItems, groupByCategory, validateName, findByName, toggle, parseBackup, COLORS, nextColor } from "./logic.js";
+import { move, emptyState, visibleItems, groupByCategory, validateName, findByName, toggle, parseBackup, COLORS, nextColor } from "./logic.js";
 
 const KEY = "groceries.v1";
 const NEW_CATEGORY = "__new";
@@ -131,6 +131,12 @@ function render() {
     return;
   }
 
+  // Arrows step over visible neighbours only, so a move is never invisible.
+  const shown = groups.filter((g) => g.category).map((g) => g.category.id);
+  const arrow = (category, delta, name, cls) => {
+    const to = shown[shown.indexOf(category.id) + delta];
+    return h("button", { class: "btn edit", "data-variant": "ghost", "data-size": "icon-sm", type: "button", "data-move-category": category.id, "data-to": to, disabled: !to, "aria-label": `Move ${category.name} ${delta < 0 ? "up" : "down"}` }, icon(name, cls));
+  };
   list.replaceChildren(
     ...groups.map(({ category, items }) => {
       const open = searching || (category ? category.open : state.prefs.uncategorizedOpen);
@@ -142,6 +148,8 @@ function render() {
           {},
           titleView(category?.name ?? "Uncategorized"),
           h("span", { class: "count" }, String(items.filter((i) => i.needed).length)),
+          category && arrow(category, -1, "chevron", "up"),
+          category && arrow(category, 1, "chevron"),
           category && h("button", { class: "btn edit", "data-variant": "ghost", "data-size": "icon-sm", type: "button", "data-edit-category": category.id, "aria-label": `Edit ${category.name}` }, icon("pencil")),
           icon("chevron", "chevron"),
         ),
@@ -230,7 +238,12 @@ list.addEventListener("contextmenu", (e) => {
 list.addEventListener("click", (e) => {
   const tile = e.target.closest("[data-item]");
   const catBtn = e.target.closest("[data-edit-category]");
+  const moveBtn = e.target.closest("[data-move-category]");
   if (tile && !pressed) editMode ? openItemDialog(state.items.find((i) => i.id === tile.dataset.item)) : toggleTile(tile);
+  if (moveBtn) {
+    e.preventDefault(); // don't also toggle the <details>
+    update((s) => move(s.categories, moveBtn.dataset.moveCategory, moveBtn.dataset.to));
+  }
   if (catBtn) {
     e.preventDefault(); // don't also toggle the <details>
     openCategoryDialog(state.categories.find((c) => c.id === catBtn.dataset.editCategory));
@@ -317,10 +330,9 @@ function openItemDialog(item, name = "") {
   const f = itemForm.elements;
   $("#item-title").textContent = item ? "Edit item" : "Add item";
   f.name.value = item?.name ?? name;
-  const byName = (a, b) => a.name.localeCompare(b.name);
   f.category.replaceChildren(
     h("option", { value: "" }, "None"),
-    ...[...state.categories].sort(byName).map((c) => h("option", { value: c.id }, c.name)),
+    ...state.categories.map((c) => h("option", { value: c.id }, c.name)),
     h("option", { value: NEW_CATEGORY }, "New category…"),
   );
   f.category.value = item?.categoryId ?? "";

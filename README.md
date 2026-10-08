@@ -10,9 +10,9 @@
 </p>
 
 <p align="center">
-  <img src="screenshots/pending-light.png" width="260" alt="Pending view, light theme">
-  <img src="screenshots/all-dark.png" width="260" alt="All items, dark theme">
-  <img src="screenshots/edit-dark.png" width="260" alt="Editing an item, dark theme">
+  <img src="screenshots/pending-light.png" width="260" alt="Pending view, Catppuccin light">
+  <img src="screenshots/all-dark.png" width="260" alt="All items, Neutral dark">
+  <img src="screenshots/edit-dark.png" width="260" alt="Edit mode, Catppuccin dark">
 </p>
 
 ---
@@ -26,14 +26,14 @@ Keep one list of everything you buy. Each item is a toggle: on when you need it,
 - **Search or add in one field.** Type to filter; case and accents are ignored, so "atun" finds "Atún". Press Enter to add what isn't there yet.
 - **Toggle tiles.** Tap an item to switch it on or off. Tiles wrap, so a whole store fits on one screen.
 - **Pending and All views.** See only what you need, or your whole catalog. In All, off items show as dashed outlines.
-- **Edit by long-press.** Hold a tile to edit it, or tap **Edit** and then tap any tile or category.
-- **Categories.** Group items by aisle. Each category has a color. Collapse the ones you don't need.
+- **Edit by long-press.** Hold a tile to edit it. Or tap **Edit**, then tap any tile, or use a category's pencil and arrows.
+- **Categories.** Group items by aisle. Each gets a colored emoji badge. Collapse the ones you don't need. In Edit mode, reorder them to match your route through the store.
 - **Tags.** Mark items with colored tags, such as the store you buy them at. Tap a tag to show only its items. Reorder tags in Settings.
 - **Quantities, important items and one-time items.** A red dot marks important items. Sparkles mark one-time items, which disappear once you tap them off.
 - **Works offline.** A service worker caches the whole app.
 - **Private by design.** No account, no server, no tracking. Your list stays in your browser.
 - **Export and import.** Back up your list as JSON, or move it to another device.
-- **Light and dark themes, two styles.** Catppuccin (Latte and Macchiato) or a plain black-and-white Neutral style. Follows your system, or pick in Settings.
+- **Light and dark themes, two styles.** Catppuccin (Latte and Macchiato) or a plain Neutral style: white, or soft near-black. Follows your system, or pick in Settings.
 
 ## Install on iPhone
 

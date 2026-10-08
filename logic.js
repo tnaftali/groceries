@@ -5,7 +5,7 @@ export const emptyState = () => ({
   items: [],
   categories: [],
   tags: [],
-  prefs: { showAll: false, uncategorizedOpen: true, lastExport: null, theme: "system", palette: "catppuccin" },
+  prefs: { showAll: false, uncategorizedOpen: true, lastExport: null, theme: "system", palette: "catppuccin", categoriesOrdered: true },
 });
 
 // Case- and accent-insensitive: "atun" matches "Atún".
@@ -27,9 +27,9 @@ export function visibleItems(state, query = "", tagId = null) {
 // First color the list doesn't use yet, so a new tag or category differs from the rest until all 14 are taken.
 export const nextColor = (list) => COLORS.find((c) => !list.some((x) => x.color === c)) ?? COLORS[list.length % COLORS.length];
 
-// Uncategorized first, then categories A→Z. Empty groups dropped. Unknown categoryId → uncategorized.
+// Uncategorized first, then categories in their saved order. Empty groups dropped. Unknown categoryId → uncategorized.
 export function groupByCategory(items, categories) {
-  const groups = [{ category: null, items: [] }, ...[...categories].sort(byName).map((category) => ({ category, items: [] }))];
+  const groups = [{ category: null, items: [] }, ...categories.map((category) => ({ category, items: [] }))];
   const byId = new Map(groups.map((g) => [g.category?.id ?? null, g]));
   for (const item of items) (byId.get(item.categoryId) ?? groups[0]).items.push(item);
   return groups.filter((g) => g.items.length).map((g) => ({ ...g, items: g.items.sort(byName) }));
@@ -72,7 +72,15 @@ export function parseBackup(text) {
   // Backups from before category colors: give each category a distinct color.
   const categories = [];
   for (const c of data.categories) categories.push({ ...c, color: COLORS.includes(c.color) ? c.color : nextColor(categories) });
+  // Before manual ordering, categories showed A→Z. Sort once so old lists look the same.
+  if (!data.prefs?.categoriesOrdered) categories.sort(byName);
   const tagIds = new Set(tags.map((t) => t.id));
   const items = data.items.map((i) => ({ ...i, tagIds: Array.isArray(i.tagIds) ? i.tagIds.filter((id) => tagIds.has(id)) : [] }));
   return { ...base, ...data, items, categories, tags, prefs: { ...base.prefs, ...data.prefs } };
+}
+
+// Moves the entry with `id` to where `toId` sits: after it when moving down, before it when moving up.
+export function move(list, id, toId) {
+  const to = list.findIndex((x) => x.id === toId);
+  list.splice(to, 0, ...list.splice(list.findIndex((x) => x.id === id), 1));
 }

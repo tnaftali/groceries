@@ -203,6 +203,8 @@ button.tag[aria-pressed="true"] { background: var(--c); border-color: var(--c); 
 .group .edit { display: none; color: var(--muted-foreground); }
 .group .edit svg { width: 1rem; height: 1rem; }
 .editing .group .edit { display: inline-flex; }
+.group .edit:disabled { opacity: .3; }
+.group .up { rotate: 180deg; }
 
 .count { color: var(--muted-foreground); font-size: .8125rem; font-weight: 600; font-variant-numeric: tabular-nums; }
 

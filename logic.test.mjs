@@ -1,7 +1,7 @@
 // Run: node --test
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { emptyState, visibleItems, groupByCategory, validateName, toggle, parseBackup, nextColor, COLORS } from "./logic.js";
+import { move, emptyState, visibleItems, groupByCategory, validateName, toggle, parseBackup, nextColor, COLORS } from "./logic.js";
 
 const fixture = () => ({
   ...emptyState(),
@@ -27,7 +27,7 @@ test("visibleItems: pending, all, search ignores filter", () => {
   assert.deepEqual(visibleItems(s, " CARR ").map((i) => i.id), ["b"]);
 });
 
-test("groupByCategory: uncategorized first, A→Z, orphans uncategorized, empty dropped", () => {
+test("groupByCategory: uncategorized first, saved order, orphans uncategorized, empty dropped", () => {
   const s = fixture();
   const groups = groupByCategory(visibleItems(s), s.categories);
   assert.deepEqual(groups.map((g) => g.category?.name ?? null), [null, "Dairy"]);
@@ -94,4 +94,22 @@ test("visibleItems: search ignores accents both ways", () => {
   const s = { ...emptyState(), items: [{ id: "a", name: "Atún", needed: true, tagIds: [] }, { id: "b", name: "Pan", needed: true, tagIds: [] }] };
   assert.deepEqual(visibleItems(s, "atun").map((i) => i.id), ["a"]);
   assert.deepEqual(visibleItems(s, "ATÚN").map((i) => i.id), ["a"]);
+});
+
+test("move: down lands after the target, up lands before it", () => {
+  const ids = (l) => l.map((x) => x.id).join("");
+  const l = ["a", "b", "c", "d"].map((id) => ({ id }));
+  move(l, "a", "c");
+  assert.equal(ids(l), "bcad");
+  move(l, "d", "c");
+  assert.equal(ids(l), "bdca");
+});
+
+test("parseBackup: old data sorts categories A→Z once, then keeps saved order", () => {
+  const cats = [{ id: "c2", name: "Veg" }, { id: "c1", name: "Dairy" }];
+  const old = parseBackup(JSON.stringify({ v: 1, items: [], categories: cats }));
+  assert.deepEqual(old.categories.map((c) => c.name), ["Dairy", "Veg"]);
+  assert.equal(old.prefs.categoriesOrdered, true);
+  const kept = parseBackup(JSON.stringify({ v: 1, items: [], categories: cats, prefs: { categoriesOrdered: true } }));
+  assert.deepEqual(kept.categories.map((c) => c.name), ["Veg", "Dairy"]);
 });
